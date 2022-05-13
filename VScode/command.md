@@ -1,2 +1,2 @@
 # mdのプレビュー
-- [ctrl] + [K] + [V]
+- [ctrl] + [shift] + [V]
