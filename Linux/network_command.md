@@ -1,3 +1,8 @@
+# ネットワーク設定があっているのにVMにpingやsshできないとき
+```bash
+sudo systemctl restart NetworkManager
+```
+
 # ARP Table 
 ```ip neigh```
 
