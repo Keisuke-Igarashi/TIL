@@ -95,3 +95,9 @@ $ nsd-checkonf /etc/nsd/nsd.conf
 nsdの起動  
 ```bash
 $ sudo systemctl start nsd
+
+- ゾーンファイル変更後の再反映
+```bash
+$ sudo nsd-control reload
+$ sudo nsd-control reconfig
+```
