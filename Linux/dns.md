@@ -63,12 +63,35 @@ www     IN    A xxx.xxx.xxx.xxx
 と。
 
 
-
-
-
-
 SOAレコードの構造  
 [^1][](https://jprs.jp/tech/material/rfc/RFC1034-ja.txt Page. 12).  
 
+- ゾーンファイルの文法チェック  
+```bash
+nsd-checkzone example.test /etc/nsd/example.test.zone
+```
+※zone example.test is okと表示されれば成功
 
+- nsd.confの修正
+```bash
+$ sudo vi /etc/nsd/nsd.conf
+```
+(https://www.nlnetlabs.nl/documentation/nsd/nsd.conf/)
 
+```
+server:
+    ip-address:xxx.xxx.xxx.xxx
+    do-pi6: no
+zone:
+    name: "example.test"
+    zonefile: "example.test.zone"
+```
+
+- nsdを起動
+nsd.confの文法チェック  
+```bash
+$ nsd-checkonf /etc/nsd/nsd.conf
+```
+nsdの起動  
+```bash
+$ sudo systemctl start nsd
