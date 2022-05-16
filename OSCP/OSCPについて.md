@@ -9,6 +9,8 @@ https://www.offensive-security.com/pwk-oscp/
 - 5つのマシンは難易度が違って、それぞれにポイントが振り分られてる。1番簡単なマシンは10ポイント。次に20ポイントのマシンが2つ。そして25ポイントのマシンが2つで合計100ポイント。100ポイントのうち70ポイントを取ることが出来たら合格。
 - HackTheBoxをイメージすれば試験のイメージがしやすい。
 - レポートは英語で記載。
+- OSCP試験を受ける前に、PWK(Penetration Testing with kali linux)というコースを受講する必要あり(90日)
+- 費用は15万程度（円高でもっと上がっているかも）
 
 ## 学習の順序
 - TryHackMeから始めるのがベータ
@@ -22,3 +24,9 @@ https://www.offensive-security.com/pwk-oscp/
 ## その他
 - 25ポイントの１つのマシーンはwindowsの"Buffer Overflow"と決まっており、事前に準備することができる唯一のマシン
 - １つ１つCheetSheetを作っていくとよいかも
+- VHL(Vir
+
+
+## 本ページの記載にあたり参考にしたサイト
+https://qiita.com/elliot_tk/items/a41654ad30619e4d37f3
+https://white-lily.hateblo.jp/entry/oscp-review
