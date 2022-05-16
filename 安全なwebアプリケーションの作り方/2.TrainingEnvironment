@@ -1,0 +1,6 @@
+https://wasbook.org/download
+
+hostsを書き換え  
+C:\Windows\System32\drivers\etc\hosts  
+
+192.168.56.101 example.jp api.example.net trap.example.com

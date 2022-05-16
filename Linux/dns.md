@@ -9,6 +9,11 @@
 systemctl restart systemd-resolved
 ```  
 
+- resolv.confが変更しないよう設定
+```
+$ sudo chattr +i /etc/resolv.conf
+```
+
 # DNSサーバーインストール
 - リポジトリアップデート
 ```bash  
