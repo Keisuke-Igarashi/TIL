@@ -1,7 +1,7 @@
 ## やることリスト
 |やること|期間|
 ----|----
-|TryHackMe|60日間(1日1コース)|
+|TryHackMe|60日間(JR.PENETRATION TESTER)|
 |HackTheBox|150日間(1日1サーバー)|
 |PWK|90日間|
 
