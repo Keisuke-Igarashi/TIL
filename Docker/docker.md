@@ -77,6 +77,10 @@ systemctl start docker
 [ベストプラクティス]  
 https://docs.docker.jp/engine/articles/dockerfile_best-practice.html
 
+![記述例](./dockerfile%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8.png)  
+RUN：イメージをビルドするときに実行するコマンド  
+CMD：コンテナを起動する時に実行する既定のコマンドを指定  
+
 
 ## Dockerイメージ
 Dockerfileをもとに、仮想環境の作成に必要な情報をパッケージ化したもの（ビルドファイル）  
@@ -121,3 +125,38 @@ $ docker volume ls
 -rm: コンテナの終了時に自動でコンテナをクリーンアップしファイルシステムを削除
 -v: コンテナにデータボリュームを追加
 -it: ターミナルでコンテナを実行（フォアグラウンド）
+
+- ボリュームの削除
+```
+# docker volume rm <VOLUME NAME>
+```
+
+## Docker Compose
+- 複数コンテナのDockerアプリを定義・実行するツール
+- 複数コンテナを管理、運用するツールをオーケストレーションツールと呼び、代表的なものにKubernetes(k8s)がある。
+
+- docker-compose.ymlで定義する主な内容
+    - Dockerイメージをビルドするための情報（Dockerfile、イメージ名等）
+    - コンテナを起動するための情報（ホストとの共有ディレクトリ設定や起動オプション等）
+    - 使用するDockerネットワーク
+
+- 公式ドキュメント(https://docs.docker.com/compose/compose-file/)
+  ※versionによって記述方法も変わってくる
+
+- サービスビルド
+```
+docker-compose build
+```
+
+- コンテナ起動
+```
+docker-compose up
+```
+
+- コンテナ停止
+```
+docker-compose down
+```
+
+![記載例](./docker_compose_yml.png)
+
