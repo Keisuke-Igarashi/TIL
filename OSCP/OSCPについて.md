@@ -15,6 +15,10 @@ https://www.offensive-security.com/pwk-oscp/
 - 次にHackTheBox(1日1マシン?) Writeupを見ながら勉強していく
 - 合格体験記(https://qiita.com/elliot_tk/items/a41654ad30619e4d37f3)では150程度のCTF(Capture The Flag(https://cybersecurity-jp.com/column/33780))をやったとのこと
 
+## レポートについて
+- Offensive Security社が出しているレポート例と同じように記述していく。(https://www.offensive-security.com/pwk-online/PWK-Example-Report-v1.pdf)
+- スクリーンショットは忘れずに
 
 ## その他
 - 25ポイントの１つのマシーンはwindowsの"Buffer Overflow"と決まっており、事前に準備することができる唯一のマシン
+- １つ１つCheetSheetを作っていくとよいかも
