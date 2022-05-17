@@ -35,3 +35,14 @@ git config --global user.email "xxxx@hogehoge.com"
 ```bash
 git rm --cached <ファイル名>
 ```
+
+# ローカルリポジトリからGitHubにリポジトリ作成するまでの手順
+
+1. GitHub上でリポジトリを空作成する。
+2. ローカルリポジトリ側でリモートを追加する。
+
+```
+git remote add origin <GitHubリポジトリのURL>
+git remote show
+```
+これでoriginが追加されるのであとは他と一緒である。
