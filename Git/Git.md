@@ -57,3 +57,15 @@ git remote show
 ```
 これでoriginが追加されるのであとは他と一緒である。
 
+# トラブルシュート
+
+## git pull / git push できなくなったとき
+```
+(venv) PS C:\Users\nflabs-03\Documents\git\kentikuApp> git pull origin master
+From https://github.com/Keisuke-Igarashi/kentikuApp
+ * branch            master     -> FETCH_HEAD
+fatal: refusing to merge unrelated histories
+
+(venv) PS C:\Users\nflabs-03\Documents\git\kentikuApp> git merge --allow-unrelated-histories FETCH_HEAD 
+```
+  
