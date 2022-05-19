@@ -31,7 +31,19 @@ git config --global user.email "xxxx@hogehoge.com"
 # .gitignoreファイル
 - .gitgnoreというファイル名で、リポジトリの直下に配置する(.gitファイルがあるディレクトリ)
 
+# .gitignoreの編集内容（venv)
+```
+# Environments
+.venv
+venv/
+```
+
+
 # ファイルのステージングの削除
 ```bash
 git rm --cached <ファイル名>
+git rm --cached ./venv/
 ```
+
+
+
