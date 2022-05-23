@@ -1,23 +1,32 @@
-# mdのプレビュー
+# VScodeのコマンド
+
+## mdのプレビュー
+
 [ctrl] + [shift] + [V]
 
-# ターミナルの立ち上げ
+## ターミナルの立ち上げ
+
 [ctrl] + [shift] + [@]
 
-# コマンドパレット
+## コマンドパレット
+
 [Ctrl] + [Shift] + [p]
 
-# 拡張機能について
+## 拡張機能について
 
 - emmet
 HTML､CSSの入力補完機能。標準でインストールされている。
-https://zenn.dev/miz_dev/articles/6cac5f2e32398d
+'https://zenn.dev/miz_dev/articles/6cac5f2e32398d'
 
-
-    - クラスをつけるには「.」
+  - クラスをつけるには「.」
+  - idをつけるには「#」
 
 - Live Sass Compiler
 Sassファイル（SCSS拡張子)を自動でCSSにコンパイルしてくれる。
 vsCode上でwatch Saasをクリックすると自動で動いてくれる。
 
+## SQLiteの拡張機能について
+
+'https://qiita.com/ritya/items/098835a96f3fcf7c6661'
+※コマンドパレットでSQLと入力しSQLite:OpenDatabaseで対象のDBを選択すること
 
