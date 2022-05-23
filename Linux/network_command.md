@@ -51,3 +51,14 @@ GUI/TUI
 もしくは以下ファイルの修正
 ```/etc/sysconfig/network-scripts/ifcfg-ensXX  
 
+
+## Ping Sweep
+1. ①シェルスクリプトを利用した方法
+```bash
+for i in {1..254}; do ping xxx.yyy.zzz.$i -c 1 -W | grep ttl | cut -d'' -f 4 | tr -d ':' >> ip_list.txt & done
+```
+
+2. fpingを利用した方法
+```bash
+fping -r 1 -g xxx.yyy.zzz.0/24 | grep alive > fping.txt
+```
