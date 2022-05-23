@@ -66,6 +66,6 @@ From https://github.com/Keisuke-Igarashi/kentikuApp
  * branch            master     -> FETCH_HEAD
 fatal: refusing to merge unrelated histories
 
-(venv) PS C:\Users\nflabs-03\Documents\git\kentikuApp> git merge --allow-unrelated-histories FETCH_HEAD 
+(venv) PS C:\Users\nflabs-03\Documents\git\kentikuApp> ｀ 
 ```
   
