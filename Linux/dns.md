@@ -14,6 +14,11 @@ systemctl restart systemd-resolved
 $ sudo chattr +i /etc/resolv.conf
 ```
 
+- 設定戻す時
+```
+$ sudo chattr -i /etc/resolv.conf
+```
+
 # DNSサーバーインストール
 - リポジトリアップデート
 ```bash  
@@ -106,3 +111,23 @@ $ sudo systemctl start nsd
 $ sudo nsd-control reload
 $ sudo nsd-control reconfig
 ```
+
+## DNSのログ
+
+/var/log配下にすることが多い
+
+- CategoryとSeverityを設定することができる
+
+## DNSサーバーの脆弱性による攻撃手法
+
+- DNSキャッシュポイズニング  
+以前の問い合わせの記録（TTLで管理している）  
+大量の応答をコンテンツサーバーより先に送る  
+キャッシュサーバーが答えを誤認して別のIPアドレス  
+に転送してしまう。  
+
+- DoS
+
+- カミンスキー攻撃
+（DNSキャッシュポイズニングの新たな手法）
+

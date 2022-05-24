@@ -1,3 +1,22 @@
+# SSH
+
+## 認証方式
+1. パスワード認証方式
+2. 公開鍵認証方式
+3. ワンタイムパスワード認証方式
+
+## パスワード認証
+```
+ssh ユーザ名@<対象ホストのIP>
+ssh -l msfadmin <対象ホストのIP>
+```
+
+## 公開鍵認証
+公開鍵のほうが安全。
+①クライアントが秘密鍵と公開鍵を作成し、接続先に公開鍵を送る  
+②秘密鍵を利用して署名を作成し、署名のみを接続先に送る  
+ 接続先では公開鍵を使って署名を検証しログイン許可する。  
+
 - SSH鍵作成
 ```bash
 $ ssh-keygen -t rsa -b 4096
@@ -17,3 +36,7 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub root@xxx.xxx.xxx.xxx
 ```bash
 ssh -i ~/.ssh/id_rsa root@192.168.11.103
 ```
+
+### SSHのログ
+- /var/log/auth.log or /var/log/secure
+
