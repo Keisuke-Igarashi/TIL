@@ -13,7 +13,7 @@ rd /s <間違えてcloneしてきたディレクトリ>
 git add ファイル名
 git add .
 git commit -m "コミットメッセージ"
-git push origin main
+git push -u origin main
 ```
 
 # 状態確認
@@ -78,6 +78,50 @@ git log --oneline math.sh
 git rev-parse HEAD
 git rev-parse main
 ```
+
+# git branch
+```
+作成
+git branch <ブランチ名>
+名前変更
+git branch -m <変更前ブランチ名> <変更後ブランチ名>
+削除
+git branch -d <ブランチ名>
+```
+
+## ブランチのマージ
+反映させたい方に切り替え
+```
+git checkout 反映したいブランチ
+git branch
+```
+
+反映したいブランチにほかのブランチの内容を反映
+```
+git merge <マージするブランチ名>
+```
+
+## git branch の分岐のさせ方
+'https://qiita.com/shizen-shin/items/3437a6867e86dd452ab1'
+
+
+# git checkout
+過去にさかのぼる
+```
+git checkout <SHA1 ID>
+```
+
+# git tag
+```
+git tag <タグ名>　-m "<メッセージ>" <SHA ID>
+```
+```
+git show <タグ名>
+```
+
+tagをつけることでコミットに名前をつけることができるので、  
+pushとセットくらいの勢いでtag作成するプロジェクトもあるだろう。
+
 
 # gitk
 * GUIで確認
