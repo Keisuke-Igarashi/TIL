@@ -24,12 +24,17 @@ git branch
 
 # Gitのコンフィグ設定
 ```bash
-git config --global user.name "XXX"
-git config --global user.email "xxxx@hogehoge.com"
+git config --global user.name "Keisuke-Igarashi"
+git config --global user.email "igarashi4948@gmial.com"
+git config --global user.email "ke.igarashi@tech.nflabs.jp"
 ```
 
 # .gitignoreファイル
 - .gitgnoreというファイル名で、リポジトリの直下に配置する(.gitファイルがあるディレクトリ)
+
+言語やフレームワークごとにテンプレあるので使う
+'https://github.com/github/gitignore'
+'https://www.toptal.com/developers/gitignore'
 
 # .gitignoreの編集内容（venv)
 ```
