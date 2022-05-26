@@ -66,6 +66,13 @@ git log --oneline
 git log --patch-with-stat #具体的に何が変更になったかまでみる
 git log --oneline math.sh
 ```
+![](IMG/HEAD.png)
+
+ブランチの最後のコミットのSHA1 IDを表示
+```
+git rev-parse HEAD
+git rev-parse main
+```
 
 # gitk
 * GUIで確認
