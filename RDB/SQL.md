@@ -161,6 +161,29 @@ DROP TABLE product;
 - データベースのアクセス制御を行う
 - GRANT(アクセス権限付与),REVOKE(アクセス権限取り消し)
 
+## 副問い合わせ
+```
+-- SELECT
+-- 	cus.customer_id,
+-- 	cus.first_name,
+-- 	cus.last_name,
+-- 	B.rental_id_count,
+-- 	B.is_match
+-- FROM customer AS cus
+-- JOIN
+-- (
+-- SELECT
+-- 	c.customer_id,
+-- 	COUNT(r.rental_id) AS rental_id_count,
+-- 	c.is_match AS is_match
+-- FROM campaign AS c
+-- JOIN rental AS r
+-- ON c.customer_id = r.customer_id
+-- GROUP BY c.customer_id
+-- ORDER BY rental_id_count DESC
+-- ) AS B
+-- 	ON cus.customer_id = B.customer_id
+```
 
 
 

@@ -57,6 +57,22 @@ git remote show
 ```
 これでoriginが追加されるのであとは他と一緒である。
 
+# git log
+* ログ履歴
+* SHA1 IDで一意管理
+```
+git log
+git log --oneline
+git log --patch-with-stat #具体的に何が変更になったかまでみる
+git log --oneline math.sh
+```
+
+# gitk
+* GUIで確認
+```
+gitk
+```
+
 # トラブルシュート
 
 ## git pull / git push できなくなったとき
@@ -68,4 +84,3 @@ fatal: refusing to merge unrelated histories
 
 (venv) PS C:\Users\nflabs-03\Documents\git\kentikuApp> ｀ 
 ```
-  
