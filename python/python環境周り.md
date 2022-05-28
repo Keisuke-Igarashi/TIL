@@ -16,8 +16,20 @@ python --version
 
 1. VScodeにて、pythonプロジェクトのディレクトリを開いておく。
 2. pythonでvenv環境を作る
-```
+
+```cmd
 python --version
 python -m venv venv
 ./venv/Script/activate
+```
+
+- macの場合
+
+```bash
+source ./venv/bin/activate
+pip install flask
+export FLASK_APP=flaskr     //__init__.pyが格納されているディレクトリ
+export FLASK_ENV=development
+flask run
+flask init-db
 ```
