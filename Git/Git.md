@@ -154,3 +154,9 @@ git log --oneline
 git status
 ```
 などで状況を確認すること。ヒントを書いてくれてる
+
+git logでこんな感じになればpushできる。
+```
+83e756c (HEAD -> main) modified git.md
+cf06eff (origin/main, origin/HEAD) modifeid 基礎.md
+```
