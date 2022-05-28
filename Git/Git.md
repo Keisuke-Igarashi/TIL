@@ -124,10 +124,17 @@ pushとセットくらいの勢いでtag作成するプロジェクトもある�
 
 
 # gitk
+
 * GUIで確認
 ```
 gitk
 ```
+
+# git rebase
+
+変更を残したままコミット履歴を削除する
+rebase：ブランチの親を変える。ローカルブランチの開始地点を変更する。
+
 
 # トラブルシュート
 
@@ -140,3 +147,10 @@ fatal: refusing to merge unrelated histories
 
 (venv) PS C:\Users\nflabs-03\Documents\git\kentikuApp> ｀ 
 ```
+
+まずは
+```
+git log --oneline
+git status
+```
+などで状況を確認すること。ヒントを書いてくれてる
