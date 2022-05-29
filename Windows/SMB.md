@@ -1,9 +1,15 @@
 # SMB
 
+* Server Message Block Protocol
+
 windowsマシン間でファイル共有やプリンタ共有を行うためのプロトコル  
-windowマシンだけでなく、linuxにも対応している
+windowマシンだけでなく、linuxにも対応している  
+→ Samba : SMB protcol をサポートするオープンソース。Unix systemでリリースされた。
+
+* TCP/IPを用いてサーバーと接続をする
 
 ## 特徴
+
 - ポート番号：137-139,445
 - バージョン
     -SMB v1
@@ -19,6 +25,12 @@ windowマシンだけでなく、linuxにも対応している
 
 ```
 # smbclient //<対象のホストのIP>/<ディレクトリパス> -U <ユーザ名>
+```
+
+```
+smbclient //[IP]/[SHARE]
+-U [name] : to specify the user
+-p [port] : to specify the port
 ```
 
 
@@ -50,6 +62,9 @@ SMBから情報を列挙するためのツール
 ```
 enum4linux -h
 ```
+
+```
+enum4linux <対象のホストIP>
 
 ユーザ情報
 ```

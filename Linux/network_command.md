@@ -82,3 +82,8 @@ whois microsoft.com
 
 ※OSINTなんかでもよく使うみたい
 
+## dig
+
+```bash
+dig <domain> @<dns-server-ip>
+```
