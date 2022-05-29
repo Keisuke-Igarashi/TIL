@@ -62,3 +62,23 @@ for i in {1..254}; do ping xxx.yyy.zzz.$i -c 1 -W | grep ttl | cut -d'' -f 4 | t
 ```bash
 fping -r 1 -g xxx.yyy.zzz.0/24 | grep alive > fping.txt
 ```
+
+## ping
+
+- オプション
+  - -v verbose
+  - -i interval
+  - -4 ipv4only
+
+## whois
+
+会社情報やドメインを登録した組織の情報などを確認できる。
+
+-[web whois](https://www.whois.com/whois/)
+
+```bash
+whois microsoft.com
+```
+
+※OSINTなんかでもよく使うみたい
+
