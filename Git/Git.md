@@ -47,7 +47,7 @@ venv/
 # ファイルのステージングの削除
 ```bash
 git rm --cached <ファイル名>
-git rm --cached ./venv/
+git rm --cached -r ./venv/
 ```
 
 

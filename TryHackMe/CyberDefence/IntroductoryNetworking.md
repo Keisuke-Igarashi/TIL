@@ -46,11 +46,11 @@ translates the data into a standardised format, as well as handling any encrypti
 
 * 最初のヘッダをみることでどのLayerかを判断できる(各パケットの名称を覚えること)
 
-![](img/encapsulation.png)
+![](/TryHackMe/OffensivePentesting/img/encapsulation.png)
 
 ## Task4 The TCP/IP Model
 
-![](img/TwoModelMatchUP.png)
+![](/TryHackMe/OffensivePentesting/img/TwoModelMatchUP.png)
 
 ### 3-way-handshake
 
