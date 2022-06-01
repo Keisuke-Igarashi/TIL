@@ -33,14 +33,36 @@ http://localhost/Users/_personal/Web/Scenario1122/VulSoft/enquete.php?page=2&nam
 ```
 
 ### 対策
+・レスポンスするデータに対してサーバー側でエスケープ処理を施す
+→phpだとhtmlspecialchars関数を利用する
+
+```php
+$value = htmlspecialchars(nl2br($row[$k]), ENT_QUOTES, "UTF-8");
+```
+
 
 
 ## CSRF
+Cross Site Request forgery
+- forgery：偽造
+
+### 脆弱性内容
+* **ログインしている**ユーザが意図しないリクエスをWebアプリケーションが
+受け付けてしまう脆弱性
 
 ### 脆弱性判断ポイント
 1. hidden属性にトークンを持っていないまたは推測可能である場合
 2. 購入、更新が行われる画面からパスワードの入力を求められない場合
 3. refererを確認していない場合
+
+### 攻略方法
+掲示板等にパスワード変更画面や購入画面等に遷移するためのURLを
+仕込んでおく。もしくはGETでサーバーが受信しているのであればクエリストリング
+で値を変更するためのリクエストをサーバーに投げるなど
+
+
+### 修正方法
+学習未実施（Apgoatで別途)(6/2の演習中に実施)
 
 ### 対策
 
@@ -52,4 +74,8 @@ http://localhost/Users/_personal/Web/Scenario1122/VulSoft/enquete.php?page=2&nam
 
 3. サーバ側で処理前にパスワード要求
 →画面の設計変更が必要
+
+'https://www.ipa.go.jp/files/000017316.pdf'
+p31
+
 
