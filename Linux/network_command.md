@@ -87,3 +87,9 @@ whois microsoft.com
 ```bash
 dig <domain> @<dns-server-ip>
 ```
+
+## プロセスが動いているポート確認
+
+```bash
+lsof -i
+```
