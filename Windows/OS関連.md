@@ -11,3 +11,7 @@ dir env:path |  % {$_.Value -replace ";","`r`n"}
 #その１
 $env:Path.Split(";")
 ```
+
+## 環境変数の設定方法(java(jre))
+
+'https://www.techfun.co.jp/service/magazine/java/windows-jdk-pathset.html'
