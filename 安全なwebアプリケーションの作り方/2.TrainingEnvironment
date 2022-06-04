@@ -1,6 +1,16 @@
+# 2 実習環境のセットアップ
+
+* dvaファイルのダウンロード
 https://wasbook.org/download
 
-hostsを書き換え  
+* 自端末側設定hostsの書き換え
+
+* hostsを書き換え
+```
 C:\Windows\System32\drivers\etc\hosts  
 
 192.168.56.101 example.jp api.example.net trap.example.com
+```
+→これで自端末のブラウザからexample.jpでアクセスができるようになる
+
+
