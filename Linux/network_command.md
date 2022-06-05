@@ -109,6 +109,8 @@ nc beginnersbof.quals.beginners.seccon.jp 9000
 
 # ifconfig
 
+'https://kotaro7750.hatenablog.com/entry/linux_nic'
+
 * tun0, tun1：VPN接続している際、トンネリング情報として表示される。
 
 
@@ -170,3 +172,50 @@ tun1: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1500
         TX packets 2  bytes 96 (96.0 B)
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 ```
+
+* On the system, search for all SUID files. What file stands out?
+
+        * SUID
+        'https://kazmax.zpp.jp/linux_beginner/setuserid.html'
+        rwsとなる特殊なファイル。所有者でしか実行ができない
+
+        bin/passwdなど
+
+        writeupで実行しているコマンド
+        ```
+        find / -user root -perm -4000 -print 2>/dev/null
+
+
+        * 答え
+        /bin/systemctl
+
+        ```
+        $ ls -l /bin | grep rws
+        -rwsr-xr-x 1 root root   30800 Jul 12  2016 fusermount
+        -rwsr-xr-x 1 root root   40152 May 16  2018 mount
+        -rwsr-xr-x 1 root root  142032 Jan 28  2017 ntfs-3g
+        -rwsr-xr-x 1 root root   44168 May  7  2014 ping
+        -rwsr-xr-x 1 root root   44680 May  7  2014 ping6
+        -rwsr-xr-x 1 root root   40128 May 16  2017 su
+        -rwsr-xr-x 1 root root  659856 Feb 13  2019 systemctl
+        -rwsr-xr-x 1 root root   27608 May 16  2018 umount
+        ```
+
+* Become root and get the last flag (/root/root.txt)
+
+        * これは基本なので必ず実施
+        ```
+        $ whoami ; id
+        www-data
+        uid=33(www-data) gid=33(www-data) groups=33(www-data)
+        ```
+
+        * systemctl
+        初回のシステムを動かすためのバイナリ。
+        デフォルトでsystemctlは/etc/system/systemdを探す。
+
+        * 環境変数をセットしてroot権限を奪取する??
+
+        'https://gtfobins.github.io/gtfobins/systemctl/#suid'
+
+        
