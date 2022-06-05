@@ -102,3 +102,71 @@ TCPやUDPのエコーサーバーを起動できる。ncatコマンドのシン�
 ```
 nc beginnersbof.quals.beginners.seccon.jp 9000
 ```
+
+# ネットワークインターフェース
+
+コンピューターがネットワーク上にあるほかのコンピューターと通信する際に、パケットをやりとりする「境界」となるリソースのこと。
+
+# ifconfig
+
+* tun0, tun1：VPN接続している際、トンネリング情報として表示される。
+
+
+```bash
+┌──(kali㉿kali)-[~]
+└─$ ifconfig                                                                                            
+docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+        inet6 fe80::42:ffff:fe69:5903  prefixlen 64  scopeid 0x20<link>
+        ether 02:42:ff:69:59:03  txqueuelen 0  (イーサネット)
+        RX packets 8996  bytes 365688 (357.1 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 9018  bytes 31239191 (29.7 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.22.131  netmask 255.255.255.0  broadcast 192.168.22.255
+        inet6 fe80::20c:29ff:feef:9680  prefixlen 64  scopeid 0x20<link>
+        ether 00:0c:29:ef:96:80  txqueuelen 1000  (イーサネット)
+        RX packets 189  bytes 38132 (37.2 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 225  bytes 39148 (38.2 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+        device interrupt 18  base 0x2000  
+
+eth1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.11.131  netmask 255.255.255.0  broadcast 192.168.11.255
+        inet6 fe80::20c:29ff:feef:9676  prefixlen 64  scopeid 0x20<link>
+        ether 00:0c:29:ef:96:76  txqueuelen 1000  (イーサネット)
+        RX packets 883217  bytes 368020531 (350.9 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 1145061  bytes 338260609 (322.5 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (ローカルループバック)
+        RX packets 120  bytes 39472 (38.5 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 120  bytes 39472 (38.5 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+tun0: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1500
+        inet 10.18.86.217  netmask 255.255.128.0  destination 10.18.86.217
+        inet6 fe80::bb7b:f76b:f91b:22b1  prefixlen 64  scopeid 0x20<link>
+        unspec 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00  txqueuelen 500  (不明なネット)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 5  bytes 240 (240.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+tun1: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1500
+        inet 10.18.86.217  netmask 255.255.128.0  destination 10.18.86.217
+        inet6 fe80::139b:d099:4641:78ec  prefixlen 64  scopeid 0x20<link>
+        unspec 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00  txqueuelen 500  (不明なネット)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 2  bytes 96 (96.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
