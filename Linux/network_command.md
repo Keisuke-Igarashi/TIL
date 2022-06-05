@@ -93,3 +93,12 @@ dig <domain> @<dns-server-ip>
 ```bash
 lsof -i
 ```
+
+# nc(netcat)
+
+TCPやUDPのエコーサーバーを起動できる。ncatコマンドのシンボリックリンクとなっている。
+
+接続先のサーバーで9000番でTCPまたはUDPポートが開いている前提で
+```
+nc beginnersbof.quals.beginners.seccon.jp 9000
+```
