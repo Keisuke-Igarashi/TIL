@@ -1,5 +1,13 @@
 # SSH
 
+## SSH接続できないとき
+
+* sshの設定を確認する
+    * セキュリティ的にあまりよくないけどwindows→linuxでパスワード認証するときは、
+    　passwordAuthenticationがyesになっているかを確認
+
+    　devian系は/etc/ssh/sshd_config
+
 ## 認証方式
 1. パスワード認証方式
 2. 公開鍵認証方式
@@ -40,3 +48,15 @@ ssh -i ~/.ssh/id_rsa root@192.168.11.103
 ### SSHのログ
 - /var/log/auth.log or /var/log/secure
 
+### SSHの設定ファイル
+パスワード認証がyesになっているかはここを確認
+```
+/etc/ssh/ssh_config
+```
+
+### SSHの再起動
+
+Debian(Ubuntu, kali)
+```bash
+sudo /etc/init.d/ssh restart
+```

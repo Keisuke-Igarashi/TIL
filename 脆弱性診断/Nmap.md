@@ -206,3 +206,13 @@ put <ファイル名>
 - vsftpd.logなど
 
 
+### 脆弱性付のポート検索
+```
+$nmap -sV --script vuln <ipアドレス>
+```
+
+### exploitの検索
+```
+sf6 > search ms17-010
+```
+
