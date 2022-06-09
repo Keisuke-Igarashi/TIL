@@ -211,8 +211,3 @@ put <ファイル名>
 $nmap -sV --script vuln <ipアドレス>
 ```
 
-### exploitの検索
-```
-sf6 > search ms17-010
-```
-
