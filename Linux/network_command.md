@@ -173,3 +173,14 @@ tun1: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1500
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 ```
 
+## portを解放するコマンド
+
+```bash
+┌──(venv)(kali㉿kali)-[~/Documents/git/myarchitecturaljourney_igarashikeisuke/Docker]
+└─$ sudo lsof -i:3306
+COMMAND    PID  USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+mariadbd 91496 mysql   20u  IPv4 308075      0t0  TCP localhost:mysql (LISTEN)
+
+┌──(venv)(kali㉿kali)-[~/Documents/git/myarchitecturaljourney_igarashikeisuke/Docker]
+└─$ sudo kill 91496
+```
