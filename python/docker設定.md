@@ -183,6 +183,18 @@
         docker volume create mysql_config
         ```
 
+        * ボリュームのリスト表示
+
+            ```bash
+            docker volume ls
+            ```
+
+        * ボリュームの詳細
+
+            ```bash
+            docker volume inspect ボリューム名
+            ```
+
     * DBと接続するためのネットワークを作成する
 
         ユーザ定義ネットワークを作江氏することでDNSの機能が使えるようになる。
@@ -201,6 +213,14 @@
         -e MYSQL_ROOT_PASSWORD=p@ssw0rd1 \
         mysql
         ```
+
+        * -v or --volume オプション
+
+            * 第一引数：ボリューム名
+            * 第二引数：コンテナのどのディレクトリにマウントするか
+            * 第三引数：roなどのオプション
+
+             ![](/python/img/docker_volume.png)
 
     * MySQLへの接続
 
@@ -235,10 +255,6 @@
 
 
         cursor.execute("SELECT * FROM widgets")
-        cursor.execute("INSERT INTO widgets(name, description) \
-                        VALUES (
-                            
-                        ))
 
         row_headers=[x[0] for x in cursor.description] #this will extract row headers
 
