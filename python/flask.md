@@ -74,7 +74,7 @@
     pythonにおいてwebサーバーとWebアプリケーション（あるいはWebアプリケーションフレームワーク)を接続するための標準化されたインターフェース定義のこと
 
 
-* 大菅さんのFlaskの実行のさせ方
+* 本番環境での実行について
 
     開発サーバーであるflask runを利用しており、本番環境への適用は非推奨である。本来であれば別途HTTPサーバーを立ててFlaskと連携させる設定をするべき。
 
@@ -82,13 +82,29 @@
 
     ![](/python/img/flask_server.png)
     
-    * docker-compose.yml
-    
-    ```yml
-    python:
-        build: ./python # pythonディレクトリ以下のDockerファイルからビルド
+
+## FlaskからHTML→Javascriptにデータを送る方法
+
+* Flask側の記載：render_templateで連携する
+    ```python
+    return render_template('search.html', archs = result2)
     ```
 
+* HTML側の記載：jinjaの文法で呼び出す。json形式で呼び出しをする
+
+    ```html
+    <script type="text/javascript">
+        const archs = {{ archs | tojson }} 
+        // console.log( {{ archs | tojson }} )
+    </script>
+    <script type="text/javascript" src="{{ url_for('static', filename='/js/leaflet_tuto.js') }}"></script>
+    ```
+
+* js側の記載：Array型の変数としてarchsをグローバル変数として利用可能となる。
+
+    ```js
+    const archs_js = archs 
+    ```
 
 ### チュートリアルメモ
 
