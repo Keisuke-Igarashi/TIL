@@ -73,6 +73,15 @@
         COPY . .
         ```
 
+    * 環境変数を指定
+
+        ```docker
+        ENV FLASK_APP majapp
+        ENV FLASK_ENV development
+        ```
+
+        * CMD export FLASK_APP = majappで実行してみたがこれはダメだった。
+
     * CMD：コンテナ起動時に実行するコマンドを指定
 
         ```docker
@@ -360,6 +369,16 @@
         ```
 
         * [docker-compose.ymlの記載方法](https://docs.docker.com/compose/compose-file/)
+
+        * docker_compose時のnetwork設定について
+
+            * [参考サイト](https://docs.docker.jp/compose/networking.html)
+
+                同一のcompose.yml内で指定したサービスは同一のbridgeネットワーク内に設定される。
+
+    * mysqlの初期化について
+
+        * [参考サイト](https://qiita.com/moaikids/items/f7c0db2c98425094ef10)
 
 
     * コンテナを実行
