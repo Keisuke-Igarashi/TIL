@@ -19,3 +19,7 @@ styleのまとめての適用が可能
 `https://html-coding.co.jp/annex/dictionary/html/input/`
 formタグで作成したフォームの中でテキスト入力欄やボタンなどの部品を作成する要素
 
+## thead
+* 'https://html-coding.co.jp/annex/dictionary/html/thead/'
+
+    *テーブルヘッダ。表のタイトルを作成するブロック

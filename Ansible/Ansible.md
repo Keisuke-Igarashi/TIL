@@ -1,11 +1,17 @@
-# インストール
+# **Ansible**
+
+* 特徴：冪等性（べきとうせい）
+
+![ansible_sumary](/Ansible/img/ansible_sumaly.png)
+
+## インストール
 ```bash
 sudo apt update
 sudo apt install ansible
 ansible --version
 ```
 
-# インベントリの記載方法（例）
+## インベントリの記載方法（例）
 ```
 [web_serber]
 xxx.xxx.xxx.xxx
@@ -14,7 +20,7 @@ xxx.xxx.xxx.xxx
 localhost ansible_connection=local
 ```
 
-# playbookの記載方法（例）**タブは使わず半角空白でインデントすること**
+## playbookの記載方法（例）**タブは使わず半角空白でインデントすること**
 ```
 - hosts: webserver
   remote_user: root
@@ -41,86 +47,86 @@ localhost ansible_connection=local
 https://docs.ansible.com/ansible/2.9_ja/modules/firewalld_module.html
 上記で検索しながら調べていく
 
-# playbookの実行
-```bash
-ansible-playbook -i inventory xxxxx.yml
+## playbookの実行
+  ```bash
+  ansible-playbook -i inventory xxxxx.yml
 ```
 
-inventory：ホストやIPアドレスなど接続先の情報を記載
-xxxx.yml：playbook.設定内容を記載する。yml形式以外にini形式がある
+  * inventory：ホストやIPアドレスなど接続先の情報を記載
+  * xxxx.yml：playbook.設定内容を記載する。yml形式以外にini形式がある
 
 
-# playbookのオプション
-## -iオプション
+## playbookのオプション
+### -iオプション
 インベントリを指定し実行する  
 ```
 ansible-playbook -i <インベントリファイル名>　<playbook名>
 ```
 
-## --checkオプション  
+### --checkオプション  
 changedとなる可能性がある箇所を予測し、差分確認のみを行う
 ```
 ansible-playbook -i <インベントリファイル名>　<playbook名> --check
 ```
 
-## -v, -vv, -vvvオプション
+### -v, -vv, -vvvオプション
 playbook実行時にログを表示vが多いほど、より詳細にログが表示される  
 ```
 ansible-playbook -i <インベントリファイル名>　<playbook名> -v
 ```
 
-## --tagsオプション
+### --tagsオプション
 指定したタグのplayとtaskのみ実行する  
 ```
 ansible-playbook -i <インベントリファイル名>　<playbook名> --tags <タグ名>, <タグ名>
 ```
 
-## --skip-tagsオプション
+### --skip-tagsオプション
 指定したタグについては
 **実行しない**
 ```
 ansible-playbook -i <インベントリファイル名>　<playbook名> --skip-tags <タグ名>, <タグ名>
 ```
 
-## -k,-Kオプション
+### -k,-Kオプション
 対象サーバーのユーザのパスワードを要求する。  
 -kは一般ユーザ、-Kは権限昇格時(sudo時)のパスワード  
 ```
 ansible-playbook -i <インベントリファイル名>　<playbook名> -k
 ```
 
-## --stepオプション
+### --stepオプション
 - playbookのステップ実行で1つずつタスクを実行する
 - yで次のステップに進む、nでスキップ、cは残りすべて実行する
 ```
 ansible-playbook -i <インベントリファイル名>　<playbook名> --step
 ```
 
-## -lオプション
+### -lオプション
 playbook実行時に実行対象のホストを指定する
 ```
 ansible-playbook -i <インベントリファイル名>　<playbook名> -l <実行対象のホスト名>
 ```
 
-## --start-at-taskオプション
+### --start-at-taskオプション
 指定されたタスク名からPlaybookを実行する  
 ```
 ansible-playbook -i <インベントリファイル名>　<playbook名> --start-at-task <開始タスク名>
 ```
 
-## --syntax-checkオプション
+### --syntax-checkオプション
 playbookファイルのYAML構文チェック  
 ```
 ansible-playbook -i <インベントリファイル名>　<playbook名> --syntax-check
 ```
 
-# debugの実行
+## debugの実行
 事前にplaybookに以下設定を入れておく
 ```
 debugger: on_failed
 ```
 
-## debuggerキーワード
+### debuggerキーワード
 |値|動作|
 ----|----
 |always|結果にかかわらず常にデバッガを起動する|
@@ -129,7 +135,7 @@ debugger: on_failed
 |on_unreachable|ホストに到達しなかった場合にデバッガを起動する|
 |on_skipped|タスクがスキップされた時にデバッガを起動する|
 
-## デバッグモード時の操作
+### デバッグモード時の操作
 
 |コマンド(丸かっこは省略前のコマンド）|動作|
 ----|----
