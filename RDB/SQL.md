@@ -136,6 +136,10 @@ product (id, name, price ,description) VALUES
 	(1,'Cheese',100,'Delicious dairy'),
 	(2,'Bread',200,'Freshly baked');
 ```
+### UPDATE
+```
+UPDATE product SET price = 150 WHERE id = 1;
+```
 
 ### DELETE
 - 条件には主キーを指定することが多いが別の条件の

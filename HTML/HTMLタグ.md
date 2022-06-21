@@ -23,3 +23,18 @@ formタグで作成したフォームの中でテキスト入力欄やボタン�
 * 'https://html-coding.co.jp/annex/dictionary/html/thead/'
 
     *テーブルヘッダ。表のタイトルを作成するブロック
+
+## from
+
+* 入力ホーム以外の値をPOSTする
+
+    ```html
+    <input type="hidden" name="example" value="<連携したい値>">
+    ```
+
+    * nameでアクセス可能(flaskのrequestの例)
+
+        ```python
+        if request.method == 'POST':
+        architecture_id = request.form['architecture_id']
+        ```

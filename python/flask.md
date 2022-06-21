@@ -74,6 +74,10 @@
     pythonにおいてwebサーバーとWebアプリケーション（あるいはWebアプリケーションフレームワーク)を接続するための標準化されたインターフェース定義のこと
 
 
+* URLの構成方法
+
+
+
 * 本番環境での実行について
 
     開発サーバーであるflask runを利用しており、本番環境への適用は非推奨である。本来であれば別途HTTPサーバーを立ててFlaskと連携させる設定をするべき。
@@ -105,6 +109,16 @@
     ```js
     const archs_js = archs 
     ```
+
+## jinja
+
+* [リストをfor文で回す際のインデックスの利用方法](https://qiita.com/zyamu/items/cc87cbbe6988c3357b1e)
+
+## セキュリティの考慮点
+
+* [公式ドキュメント-セキュリティの考慮点](https://msiz07-flask-docs-ja.readthedocs.io/ja/latest/security.html?highlight=security)
+* Flaskでは、明示的に避けない限り、Jinja2が自動的にすべての値をエスケープするように設定している。
+
 
 ### チュートリアルメモ
 

@@ -60,3 +60,13 @@ Debian(Ubuntu, kali)
 ```bash
 sudo /etc/init.d/ssh restart
 ```
+
+### ubuntuのSSH設定(sshdのインストールが必要)
+
+* openssl-serverのインストール
+
+    ```bash
+    sudo apt install openssh-server
+    ```
+
+* [参考サイト](https://kaworu.jpn.org/ubuntu/Ubuntu%E3%81%ABssh%E3%81%A7%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%A7%E3%81%8D%E3%82%8B%E3%82%88%E3%81%86%E3%81%ABopenssh-server%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B)
