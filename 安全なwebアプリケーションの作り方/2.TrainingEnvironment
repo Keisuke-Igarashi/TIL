@@ -3,6 +3,20 @@
 * dvaファイルのダウンロード
 https://wasbook.org/download
 
+* Linux(debian)へのログイン情報
+
+    - ユーザID：wasbook
+    - パスワード：wasbook
+    - ip：192.168.56.101
+
+* 仮想マシンのshutdown
+
+    ```bash
+    sudo shutdown -h now
+    ```
+
+        * -hオプション：halt the machine(halt：停止する、休止させる)
+
 * 自端末側設定hostsの書き換え
 
 * hostsを書き換え
@@ -13,4 +27,8 @@ C:\Windows\System32\drivers\etc\hosts
 ```
 →これで自端末のブラウザからexample.jpでアクセスができるようになる
 
+
+## owasp zapのインストール
+
+* local proxy：localhost:58888で設定
 
