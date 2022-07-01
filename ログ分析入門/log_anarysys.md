@@ -443,3 +443,268 @@
     ![](/%E3%83%AD%E3%82%B0%E5%88%86%E6%9E%90%E5%85%A5%E9%96%80/img/fastlog.png)
 
     * fast.logは実行した際のカレントディレクトリに作成される。なので必ず調査対象の.pcapファイル直下で実行するなりすること。
+
+* シグネチャを確認する。
+
+    * suricataのシグネチャが登録されているルールファイルの場所
+
+        ```bash
+        /var/lib/suricata/rules/suricata.rules
+        ```
+
+        * シグネチャIDで絞り込みして確認
+        ```bash
+        sudo cat /var/lib/suricata/rules/suricata.rules | grep "sid:2006546"
+        ```
+
+    * シグネチャ内容の確認
+
+        * シグネチャのフォーマット
+
+            ![](/%E3%83%AD%E3%82%B0%E5%88%86%E6%9E%90%E5%85%A5%E9%96%80/img/signature_format.png)
+
+            * action：シグネチャが一致した時の動作を定義  
+            * Header：確認する通信のプロトコルやIPアドレス、ポート番号、通信の方向を定義
+            * Options: ルールの詳細を定義
+
+        * Actionの種類
+
+            |アクション|説明|
+            ----|----
+            |alert|アラートを生成|
+            |pass|パケットの検査を中止し通信を許可|
+            |drop|パケットを破棄し、アラートを生成|
+            |reject|一致したパケットの送信者にTCP RSTもしくはICMP ureachable errorを送信|
+
+            * IDSは検知のみのため基本alertのみ使用する
+            * IPSとしての運用は遮断等も行う
+
+        * Headerの詳細
+
+            * 対応しているプロトコル
+
+                * tcp/udp/icmp/ip
+                * L7プロトコル：http,dns,smb,rdp
+
+            * source and destination
+
+                * $HOME_NET：自分のネットワークの範囲を示す
+                * $EXTERNAL_NET：自分以外のネットワークの範囲をします
+
+                |演算子|説明|例|
+                ----|----|----
+                |.../...|IPアドレスの範囲(CIDR表記)|192.0.2.0/24|
+                |!|否定/例外|!192.0.2.1|
+                |[..., ...]|グループ|[192.0.2.1, 192.0.2.2]|
+
+            * ports
+
+                * ![](/%E3%83%AD%E3%82%B0%E5%88%86%E6%9E%90%E5%85%A5%E9%96%80/img/signature_header_port.png)
+
+            * Direction
+
+                ![](/%E3%83%AD%E3%82%B0%E5%88%86%E6%9E%90%E5%85%A5%E9%96%80/img/signature_header_direction.png)
+
+        * Optionsの詳細
+
+            * format
+
+                ![](/%E3%83%AD%E3%82%B0%E5%88%86%E6%9E%90%E5%85%A5%E9%96%80/img/signature_option_format.png)
+
+            * keywordの種類
+
+                ![](/%E3%83%AD%E3%82%B0%E5%88%86%E6%9E%90%E5%85%A5%E9%96%80/img/signature_options_keyword.png)
+
+    * suricata.rulesの公式ドキュメント
+
+        - 'https://suricata.readthedocs.io/en/suricata-6.0.2/rules/meta.html'
+        - 'https://suricata.readthedocs.io/en/suricata-6.0.2/rules/payload-keywords.html'
+        - 'https://dev.classmethod.jp/articles/networkfirewall-suricata/#toc-5'
+
+    
+
+    * 演習
+
+    * 検知したシグネチャ名
+        ET WEB_SPECIFIC_APPS [PT OPEN] Drupalgeddon2
+
+    * 行われている攻撃の種類や対象のシステムを調査（Google等を活用）
+        CVE-2018-7600
+        https://jvndb.jvn.jp/ja/contents/2018/JVNDB-2018-003541.html
+        https://www.intellilink.co.jp/column/vulner/2018/042400.aspx
+
+
+    * 攻撃を行ってるホスト（IPアドレス、ポート番号）
+    * 攻撃を受けているホスト（IPアドレス、ポート番号）
+    
+        54.93.114.243:58639 -> 172.20.0.2:80
+
+
+## インシデントログ分析演習
+
+* webサーバのIPアドレス：172.16.10.11
+    
+    * Apache 2.4.6 + PHP 7.4.16 + WordPress 5.7.1
+    * wordPressにはプラグインをインストール
+
+        * Contact Form 7 (6.4):'https://ja.wordpress.org/plugins/contact-form-7/'
+        * WP File Manager(6.0):'https://ja.wordpress.org/plugins/wp-file-manager/'
+
+* dbサーバーのIPアドレス：172.16.10.12
+* jumpサーバー：172.16.10.101
+* Local Maintenance :172.16.10.1
+
+* Firewall
+
+|SrcAddr|SrcPort|Dest Addr|DestPort|Action|備考|
+----|----|----|----|----|----
+|1|\*|\*|172.16.10.101|22|ACCEPT|メンテナンス用|
+|2|\*|\*|172.16.10.11|80|ACCEPT|Webサーバ用|
+|99|\*|\*|\*|\*|DROP|マッチしなかったらDrop|
+
+* インシデント分析の流れ
+
+    1. アラートを出したIDSログの分析
+
+        * アラートごとに以下をまとめる
+
+            * 最後にアラートが発生した時間
+            * 通信元、通信先
+            * シグネチャ名
+            * ピックアップした理由（何がセキュリティ上の問題なのか）
+
+        * fast.log：簡易なアラートの情報
+        * eve.json：JSON形式の詳細なアラート情報
+            EveBoxを用いて解析していく（演習ではlubuntu上にコンテナ起動して利用)
+
+            ```bash
+            CONTAINER ID   IMAGE                                                 COMMAND                  CREATED        STATUS                    PORTS                                                 NAMES
+            82cf46a141ec   jasonish/evebox                                       "/docker-entrypoint.…"   3 months ago   Exited (0) 3 months ago                                                         adoring_hugle
+            2d8ef82e9526   jasonish/evebox                                       "/docker-entrypoint.…"   3 months ago   Up 28 hours               0.0.0.0:5636->5636/tcp, :::5636->5636/tcp             evebox
+            55545a21a123   docker.elastic.co/elasticsearch/elasticsearch:8.1.0   "/bin/tini -- /usr/l…"   3 months ago   Up 28 hours               0.0.0.0:9200->9200/tcp, :::9200->9200/tcp, 9300/tcp   elasticsearch
+            ```
+
+        * 分析のヒント
+
+            * フィルタを利用して絞り込む
+            * 通常の通信と比べる
+            * 攻撃の流れを意識する
+
+                * スキャン後に攻撃が来る傾向が多い。スキャンはフィルタしてもよい。
+
+            * 通信の結果を確認する
+
+                * 404は省ける。20x,30x系を特に確認したい。
+
+            * 環境情報を思い出す
+
+        * EveBox
+
+            ![](/%E3%83%AD%E3%82%B0%E5%88%86%E6%9E%90%E5%85%A5%E9%96%80/img/eve_box.jpg.png)
+
+            * inbox：ここで不要なものをarchiveする
+            * Escalated：お気に入りに入れたものだけ表示する。ここに解析用のログを貯める
+            * Alert：全量のログが見える
+            * Events：1つ1つ表示する
+            * Reports：統計（レポート）を表示する
+
+
+
+        
+
+
+    2. インシデントの概要を推定
+    3. インシデントを時系列で詳細分析
+
+        * SSHログの調査
+
+            * 成功：Accepted
+                
+                ```bash
+                grep Accepted 2021-04-20_jump_secure.log
+                ```
+
+            * 失敗：Failed/invalid
+                
+                ```bash
+                cat 2021-04-20_jump_secure.log | grep Failed
+                ```
+
+            * **プロセスIDを取得しておき、sshログで日時（開始-終了)時間を調査する**
+
+                ![](/%E3%83%AD%E3%82%B0%E5%88%86%E6%9E%90%E5%85%A5%E9%96%80/img/ssh_processid.png)
+
+    
+        * ディスクイメージ（今回はmountで確認）
+
+            * mount
+
+            ```bash
+            $ sudo mkdir /mnt/jump
+            $ sudo mount -o ro,noexec,nodev,offset=2793406464
+            /dev/sdb /mnt/jump
+            $ sudo mkdir /mnt/web
+            $ sudo mount -o ro,noexec,nodev,offset=1074790400
+            /dev/sdc /mnt/web
+            ```
+
+                * -o: オプション
+                    * ro: 読み取り専用
+                    * noexec: バイナリの実行を不許可（マルウェアの誤実行を禁止）
+                    * nodev: スペシャルデバイスファイルのオープンを不許可
+                    * offset: 読み込む位置（バイト）
+
+        * Linuxで調査時に確認するファイル
+
+            ![](/%E3%83%AD%E3%82%B0%E5%88%86%E6%9E%90%E5%85%A5%E9%96%80/img/loganalys_linuxfile.png)
+
+        * fileのタイムスタンプ
+
+            ![](/%E3%83%AD%E3%82%B0%E5%88%86%E6%9E%90%E5%85%A5%E9%96%80/img/linux_file_mac.png)
+
+        * tab補完に関して質問
+
+                    
+            五十嵐 恵介
+            6時間前
+            @sensei
+            1点質問させてください。
+            sudo cat root/.ba
+            等と入力し、tab補完しようと思ったのですがされませんでした。.で始まるファイルはtab補完が聞かない等あるのでしょうか？もしわかれば教えていただきたいです。
+            ブックマークに追加しました
+
+
+            Yusuke Nishida
+            6時間前
+            シェルはユーザ権限で動いています。/rootはその他のユーザに権限が与えられていないため、ユーザ権限で動いているシェルは/rootの中身を見ることができません。
+            タブキーによる補完はシェルが行っているため、タブ補完が効かないものと思われます。したがって、
+            sudo -i
+            でシェルをroot権限で動かせば、タブ補完はできるものと思います。
+            :benkyouninarimasu:
+            1
+
+            ブックマークに追加しました
+
+
+            Yusuke Nishida
+            6時間前
+            例えば、cd はビルトインコマンドです。
+            $ type cd
+            cd はシェル組み込み関数です
+            cdコマンドを用いて/root へアクセスしようとすると、アクセスできません。
+            $ cd /root
+            bash: cd: /root: 許可がありません
+            当然、lsもできません。
+            $ ls /root
+            ls: ディレクトリ '/root' を開くことが出来ません: 許可がありません
+            したがって、タブ補完しようにもシェルがファイル一覧を取得できないのです。
+            sudoを付けているのだから行けるのでは？と思われるかもですが、sudoは外部コマンドです。
+            $ type sudo
+            sudo はハッシュされています (/usr/bin/sudo)
+            また、lsも外部コマンドです。
+            $ type -a ls
+            ls は `ls --color=auto' のエイリアスです
+            ls は /usr/bin/ls です
+            ls は /bin/ls です
+            したがって、sudoは/usr/bin/sudo を起動しているだけであり、sudo lsも/usr/bin/sudo /usr/bin/ls を実行しているだけです。一方で、cdやタブキーによる補完はシェルの機能なため、外部コマンドではないです。ゆえに、sudoのパラメータとして渡すこともできません。
+            ゆえに、シェルがアクセス可能な権限しかタブ補完はできないのです
