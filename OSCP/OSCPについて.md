@@ -30,3 +30,9 @@ https://www.offensive-security.com/pwk-oscp/
 ## 本ページの記載にあたり参考にしたサイト
 https://qiita.com/elliot_tk/items/a41654ad30619e4d37f3  
 https://white-lily.hateblo.jp/entry/oscp-review
+
+## その他tips
+
+* webで問題閲覧できるのでgoogle翻訳使える。
+* レポートはDeeplearning + gramallyで行ける
+* typo使ってwriteup書く
