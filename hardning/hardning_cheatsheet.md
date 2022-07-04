@@ -36,7 +36,7 @@ nmap ipアドレス
   tail -f /var/log/suricata/eve.json
   
   # シグネチャファイル確認
-  cat /var/lib/suricata/rules/suricata.rules | grep xxxxx
+  cat /var/lib/suricata/rules/suricata.rules | grep 2009358
   ```
 
 
@@ -220,21 +220,23 @@ nmap ipアドレス
       anonymous_enable=NO
       ```
 
-    * 恐らく推奨はされないがポート番号の変更も有効な手段か
+      ※ユーザ名をanonymousにすると、どのようなパスワードであっても（または、パスワードなし等）ログインできる機能。不特定多数にファイル共有をするために利用される機能。
 
+    * 恐らく推奨はされないがポート番号の変更も有効な手段か
+    
       ```bash
       listen_port = 10021
       ```
 
     * ログインできるユーザを制限
-
+    
       ```bash
       # userlistを利用する
       userlist_enable=YES
       ```
 
       * ユーザリストも/etc/vsftpd/にある(デフォルトではブラックリストのはず)
-
+    
     * [参考サイト](https://jyn.jp/vsftpd-security/)
 
 * firewallをセットアップする
@@ -295,3 +297,138 @@ nmap ipアドレス
   * 2FAを利用可能にする
 
 * すべてのクーロンタスクをchmod700にする
+
+  ```bash
+  ls /etc | grep cron
+  chmod 700 ファイル名
+  ```
+
+* ディレクトリリスティング(httpd.conf)
+
+  * Apacheのディレクトリリスティング設定を無効化する
+
+    /etc/httpd/conf.d/webapp.conf
+
+    修正前
+    
+    ```ini
+    <VirtualHost *:80>
+    DocumentRoot /var/www/webapp/
+    ServerName app.teamN.nflabs
+    Options Indexes FollowSymLinks
+    ```
+    
+    修正後(Indexes部分を削除する)
+    
+    ```ini
+    <VirtualHost *:80>
+    DocumentRoot /var/www/webapp/
+    ServerName app.teamN.nflabs
+    Options FollowSymLinks
+    ```
+
+* バージョン情報漏洩対策
+
+  * 対策
+
+    * ApacheのServerTokens設定を追加する
+
+      /etc/httpd/conf/httpd.conf
+
+      ```ini
+      # 以下の記述を追加後、httpdを再起動する
+      ServerTokens ProdServerTokens Prod
+      ```
+
+      * ServerTokens：エラーメッセージなどのサーバが作るドキュメントに、どのようなサーバの情報を表示するかを制御できる項目
+      * Prod：ProductOnlyの略。製品名（Apache）のみを開示する
+
+* SQLインジェクション対策
+
+  * 例１login.php
+
+    修正前
+
+    ```php
+    // ユーザの入力値の変数格納
+    $username = $_POST['username'];
+    $userpassword = $_POST['userpassword’];
+    // DBに接続する
+    $dbh = new PDO(dsn, dbuser, dbpassword);
+    // 時間がないため一旦以下のSQL文で実装
+    $sql = "SELECT * FROM web_app.users WHERE username='$username' AND userpassword='$userpassword’;";
+    ```
+
+    修正後
+
+    ```php
+    $sql = "SELECT * from web_app.users WHERE username = ? and userpassword = ?";
+    $stmt = $dbh->prepare($sql);
+    $params = array($_POST['username'],$_POST['userpassword'] );
+    $stmt->execute($params);
+    $loggedin_user_id = 0;
+    $loggedin_username = "";
+    // 実行結果取得
+    while($result = $stmt->fetch(PDO::FETCH_ASSOC)){
+    $loggedin_user_id = result['user_id'];
+    $loggedin_username = result['username'];
+    }
+    ```
+
+  * 例2 keiyaku.php
+
+    修正前
+
+    ```php
+    $user_id = $_GET["user_id"];
+    $sql = "SELECT * FROM web_app.keiyaku WHERE user_id = :user_id;";
+    $stmt = $dbh->prepare($sql);
+    $params = array(
+    ‘:user_id' => $user_id
+    );
+    $dbh->execute($stmt, $params);
+    ```
+
+    修正後
+
+    ```php
+    $user_id = $_GET["user_id"];
+    $sql = "SELECT * FROM web_app.keiyaku WHERE user_id = :user_id;";
+    $stmt = $dbh->prepare($sql);
+    $params = array(
+    ‘:user_id' => $user_id
+    );
+    $dbh->execute($stmt, $params);
+    ```
+
+    
+
+* OSコマンドインジェクション
+
+  修正前
+
+  ```php
+  //担当者にメールで通知する機能
+  function send_mail($user_id, $title, $description) {
+  // チケット内容をmailコマンドで送信
+  $cmd = 'echo -n "'.$message.'" | mail -s '.$title.' '.$from_addr.' '.$to_addr;
+  $res = ‘’;
+  ```
+
+  修正後
+
+  ```php
+  //担当者にメールで通知する機能
+  function send_mail($user_id, $title, $description) {
+  // エスケープ
+  $S_title = preg_replace('[;|&<>]',",$title");
+  // チケット内容をmailコマンドで送信
+  $cmd = 'echo -n "'.$message.'" | mail -s '.$S_title.' '.$from_addr.' '.$to_addr;
+  $res = ‘’;
+  ```
+
+* crontab対策
+
+  * 不審なcron設定を確認し、削除する
+    1. コマンドを実行し不審なcron設定を確認
+    2. コマンドを実行しcron設定を削除する
