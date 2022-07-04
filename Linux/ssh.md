@@ -45,7 +45,12 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub root@xxx.xxx.xxx.xxx
 ssh -i ~/.ssh/id_rsa root@192.168.11.103
 ```
 
+### teratermでの公開鍵認証設定
+
+[公開鍵認証によるSSH接続 - Tera Termの使い方](https://webkaru.net/linux/tera-term-ssh-login-public-key/)
+
 ### SSHのログ
+
 - /var/log/auth.log or /var/log/secure
 
 ### SSHの設定ファイル

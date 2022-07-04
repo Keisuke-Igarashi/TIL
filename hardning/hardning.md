@@ -35,10 +35,13 @@
 
 
     * bastionサーバー：nmapの実行が可能
-
+    
     * lampサーバー：衛るべきサーバー
-
+    
     * スコアサーバー：http://10.0.100.201/score/score.php?game_id=
+    
+    * みはりサイト
+    http://app.team1.nflabs
 
 * コマンドチートシート
 

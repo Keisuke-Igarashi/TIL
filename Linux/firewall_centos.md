@@ -8,19 +8,50 @@
 
 # Firewallの設定
 
+* 状態確認
+
+  ```bash
+  systemctl status firewalld
+  firewall-cmd --state
+  ```
+
+* 設定状況の確認
+
+  ```bash
+  # zoneの確認
+  firewall-cmd --get-active-zone
+  # zoneファイルの場所
+  ls /usr/lib/firewalld/zones
+  ```
+
+* 利用可能なサービス
+
+  ```bash
+  firewall-cmd --get-services
+  firewall-cmd --get-icmptypes
+  ```
+
 - dropテーブルの設定一覧を確認
-```
-# firewall-cmd –-zone=drop --list-all
+```bash
+firewall-cmd –-zone=drop --list-all
 ```
 - publicテーブルの設定一覧を確認
-```
-# firewall-cmd --zone=public --list-all
+```bash
+firewall-cmd --zone=public --list-all
 ```
 - HTTP通信を恒久的に許可
-```
-# firewall-cmd --zone=public --add-service=http --permanent
+```bash
+firewall-cmd --zone=public --add-service=http --permanent
 ```
 - 設定を反映させる
+```bash
+firewall-cmd --reload
 ```
-# firewall-cmd --reload
-```
+
+* IPアドレスの拒否設定
+
+  ```bash
+  firewall-cmd --zone=drop --permanent --add-source=10.0.100.103
+  ```
+
+  
