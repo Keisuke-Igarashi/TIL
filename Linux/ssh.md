@@ -75,3 +75,21 @@ sudo /etc/init.d/ssh restart
     ```
 
 * [参考サイト](https://kaworu.jpn.org/ubuntu/Ubuntu%E3%81%ABssh%E3%81%A7%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%A7%E3%81%8D%E3%82%8B%E3%82%88%E3%81%86%E3%81%ABopenssh-server%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B)
+
+
+
+### ポートフォーワーディング
+
+* ダイナミックポートフォーワーディング
+
+  SSHサーバにダイナミックポートフォワーディングを行い、SOCKSプロキシに対応しているアプリケーションで接続することで、SSHサーバからのみ接続ができるサーバに接続することができる。
+
+  ```powershell
+  ssh -D $PROXY_PORT $USER_NAME@$SSHサーバーホスト -i <秘密鍵>
+  ```
+
+* SOCKS5プロキシの設定（クライアント端末で設定）
+
+  ![image-20220705083816009](C:\Users\nflabs-03\Documents\git\TIL\TIL\Linux\img\image-20220705083816009.png)
+
+* [参考サイト](https://blog.icttoracon.net/2020/02/21/%E3%83%80%E3%82%A4%E3%83%8A%E3%83%9F%E3%83%83%E3%82%AF%E3%83%9D%E3%83%BC%E3%83%88%E3%83%95%E3%82%A9%E3%83%AF%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%EF%BC%88socks%E3%83%97%E3%83%AD%E3%82%AD/)
