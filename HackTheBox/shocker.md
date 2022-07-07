@@ -63,8 +63,55 @@
 
   * Username Enumerationできても特に有用なことがなさそうなので、UsePrivilegeSeparation DisableについてPocを試してみたい。
     上記の機能が有効に働かないことでroot権限を奪取することができるみたい。
+    
   * [Exploit-DB](https://www.exploit-db.com/exploits/40962)
-  * 
+  
+    * Pocをダウンロードしようとしたがすでにネット上からは消えていた。
+  
+    * metasploitでも検索したがそれらしいものがなかった。
+  
+      ```bash
+      msf6 > search OpenSSH
+      
+      Matching Modules
+      ================
+      
+         #  Name                                         Disclosure Date  Rank       Check  Description
+         -  ----                                         ---------------  ----       -----  -----------
+         0  post/windows/manage/forward_pageant                           normal     No     Forward SSH Agent Requests To Remote Pageant
+         1  post/windows/manage/install_ssh                               normal     No     Install OpenSSH for Windows
+         2  post/multi/gather/ssh_creds                                   normal     No     Multi Gather OpenSSH PKI Credentials Collection
+         3  auxiliary/scanner/ssh/ssh_enumusers                           normal     No     SSH Username Enumeration
+         4  exploit/windows/local/unquoted_service_path  2001-10-25       excellent  Yes    Windows Unquoted Service Path Privilege Escalation
+      
+      
+      Interact with a module by name or index. For example info 4, use 4 or use exploit/windows/local/unquoted_service_path
+      
+      ```
+
+* ブラウザの脆弱性を確認してみる。
+
+  わからなかったので、writeupに進む
+
+### 以降 Writeupを参照
+
+* [参考writeup](https://qiita.com/Griffin/items/1eca2ad64df7c67c3d34)
+* 脆弱性調査までは大体一緒であった。
+* webサイトの調査から一緒に実施していく。
+
+### 情報列挙(Enumeration)
+
+* ディレクトリ探索
+
+  * dirbを実行してみる。
+
+    ```bash
+    dirb http://10.10.10.56/
+    ```
+
+    
+
+
 
 ## 所感
 
