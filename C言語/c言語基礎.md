@@ -729,16 +729,89 @@
 * sizeof
 
   * sizeof(型)で型が宣言時に確保するメモリのサイズを取得
+
+    ```c
+    #include <stdio.h>
+    
+    int main()
+    {
+        printf("char   = %dbyte\n", sizeof(char));
+        printf("short  = %dbyte\n", sizeof(short));
+        printf("int    = %dbyte\n", sizeof(int));
+    
+        return 0;
+    }
+    ```
+
+    ```c
+    char   = 1byte
+    short  = 2byte
+    int    = 4byte
+    ```
+
   * sizeof(変数)/sizeof(型)で配列の数を算出できる
-  * 後ほどここもっと充実させてノート書く
+
+    ```c
+    int a[1000];
+    printf("%d\n", sizeof(a)/sizeof(int))
+    ```
+
+    * こちらが推奨
+
+      ```c
+      printf("%d\n", sizeof(a)/sizeof(a[0]))
+      ```
+
+      
 
 * 変数のサイズ
 
 * メモリと番地
 
+  ![image-20220708111022996](img/image-20220708111022996.png)
+
 * 変数確保のイメージ
 
-* エンディアン
+### エンディアン
+
+* エンディアンは複数のバイトを並べる順序の種類
+
+* int型の変数は4バイトの領域を確保するが、4つのバイトがどのように並んでいるか確認する。
+
+  ```c
+  #define _CRT_SECURE_NO_WARNINGS
+  #include <stdio.h>
+  
+  int main() {
+  	int var_int = 0x11223344;
+  
+  	printf("var_int のアドレス:%p\n", &var_int);
+  	// charは1バイトなので最初の1バイト分のアドレスとそれに紐づく値を表示する
+  	printf("アドレス %p の値:%x\n", (char*)(&var_int), *(char*)(&var_int));
+  	printf("アドレス %p の値:%x\n", (char*)(&var_int) + 1, *((char*)(&var_int) + 1));
+  	printf("アドレス %p の値:%x\n", (char*)(&var_int) + 2, *((char*)(&var_int) + 2));
+  	printf("アドレス %p の値:%x\n", (char*)(&var_int) + 3, *((char*)(&var_int) + 3));
+  
+  }
+  ```
+
+  実行結果
+
+  ```c
+  var_int のアドレス:00EFFA18
+  アドレス 00EFFA18 の値:44　//最初のアドレスには44が格納
+  アドレス 00EFFA19 の値:33
+  アドレス 00EFFA1A の値:22
+  アドレス 00EFFA1B の値:11
+  ```
+
+  * 16進数で11223344という4バイトのデータを、バイトごとに上位から「11 22 33 44」のように並べる順序はビックエンディアン、下位側から「44 33 22 11」のように並べる順序はリトルエンディアンという
+
+  * 結果よりインテルのx86_64はリトルエンディアンであることがわかる
+
+    ![image-20220709084430826](img/image-20220709084430826.png)
+
+    * https://e-words.jp/w/x86.html
 
 * Visual Studio上でアドレスが動的に変化してしまう場合は以下設定を行う
 
@@ -805,16 +878,28 @@
 * 変数とアドレス
 
   * %fでアドレスを表示
+  * ポインタを使用するためには、宣言後有効なアドレスを設定する必要がある
 
 * ポインタ
 
-  * ポインタ宣言時に型も併せて宣言する。ポインタが参照する変数もポインタの型に依存する
+  ![image-20220708210735811](img/image-20220708210735811.png) 
+
+  * ポインタ宣言時に型も併せて宣言する。ポインタが参照する変数もポインタの型に影響を受けるため注意が必要![image-20220708112818730](img/image-20220708112818730.png)
 
   * ポインタを使用するには以下の段階を踏む必要がある
 
     * 宣言
     * アドレス(値)の設定
     *  使用	
+
+    ```c
+    int *p;
+    int a;
+    p = &a;
+    *p = 100; //a=100と同じ
+    ```
+
+    * *pの\*を間接参照演算子と呼ぶ
 
     ```c
     #define _CRT_SECURE_NO_WARNINGS
@@ -842,11 +927,615 @@
 
 * ポインタと関数 アドレス渡し
 
+  ```c
+  /* ===========================================================
+   * 演習
+   * 二つの整数を入れ替えるIntSwap関数を作成してください。
+   * この演習では、IntSwap関数の引数の宣言と、テストプログラムから
+   * IntSwap関数を呼び出すか所まで実装してください。
+   * ===========================================================*/
+  void IntSwap(int *num1_add, int *num2_add)
+  {
+  	int temp = 0;
+  	temp = *num1_add;
+  	*num1_add = *num2_add;
+  	*num2_add = temp;
+  }
+  
+  int main()
+  {
+  	int num1 = 100;
+  	int num2 = 129;
+  
+  	printf("num1 = %d\n", num1);
+  	printf("num2 = %d\n", num2);
+  
+  	/*** ここでIntSwap関数を呼び出して、整数の入れ替えを行う ***/
+  	IntSwap(&num1, &num2);
+  
+  	printf("num1 = %d\n", num1);
+  	printf("num2 = %d\n", num2);
+  
+  	return 0;
+  }
+  
+  ```
+
+  
+
 * 配列とアドレス
+
+  * 配列はメモリ上で要素の型が要素数分連続して確保される
+
+    * 添え字を使用しない配列名はその配列の先頭アドレスを返す
+
+      ![image-20220708204729143](img/image-20220708204729143.png)
+
+  * int型の配列であれば先頭アドレスから4byteずつメモリ確保される
+
+  * ポインタは配列のアドレスを格納して使用することもできる
+
+    ```c
+    #define _CRT_SECURE_NO_WARNINGS
+    #include <stdio.h>
+    #include <stdlib.h>
+    
+    int main() {
+    	int a[7] = { 0, 1, 2, 3, 4, 5, 6 };
+    	int* p; //ポインタ宣言
+    	p = a;  //ポインタpに配列aのアドレスを設定
+    
+    	printf("&p=%p\n", &p);
+    	printf("p=%p\n", p);
+    	printf("&a=%p\n", &a);
+    	printf("a=%p\n", a);
+    	printf("*a=%d\n", *a);
+    	printf("*a+1=%d\n", *a + 1);
+    	printf("*a+4=%d\n", *a + 4);
+    	printf("*p=%d\n", *p);
+    
+    }
+    ```
+
+    結果
+
+    ```c
+    &p=0057FBC0
+    p=0057FBCC
+    &a=0057FBCC
+    a=0057FBCC
+    *a=0
+    *a+1=1
+    *a+4=4
+    *p=0
+    ```
+
+    * pもaも同様のアドレスを変数に保持している。ただしpはポインタであり、変数の中身はアドレス。aはあくまでも配列で&aで先頭のアドレスを指示している。ポインタなのか、配列の先頭なのかをキチンと区別すること
+
+  * 実行例
+
+    ```c
+    /* ===========================================================
+     * 演習
+     * ポインタを使い、配列の各要素のアドレスを出力してください。
+     * ===========================================================*/
+    int main()
+    {
+    	char moji[5];
+    	char *moji_p = moji;
+    	int num[5];
+    	int *num_p = num;
+    	double dub[5];
+    	double *dub_p = dub;
+    
+    	for (int i = 0; i < 5; i++) {
+    		// printf("char[%d] addr[%p]\n", i, &moji_p[i]);
+    		// printf("char[%d] addr[%p]\n", i, &moji[i]);
+            /* ポインタの型サイズ*5 */
+    		// printf("char[%d] addr[%p]\n", i, (moji_p + i));
+            /* インクリメント */
+    		printf("char[%d] addr[%p]\n", i, moji_p++);
+    	}
+    
+    	printf("\n");
+    
+    	for (int i = 0; i < 5; i++) {
+    		printf("int[%d] addr[%p]\n", i, &num_p[i]);
+    	}
+    
+    	printf("\n");
+    
+    	for (int i = 0; i < 5; i++) {
+    		printf("double[%d] addr[%p]\n", i, &dub_p[i]);
+    	}
+    	return 0;
+    }
+    ```
+
+    ```
+    char[0] addr[009AFED0]
+    char[1] addr[009AFED1]
+    char[2] addr[009AFED2]
+    char[3] addr[009AFED3]
+    char[4] addr[009AFED4]
+    
+    int[0] addr[009AFEA8]
+    int[1] addr[009AFEAC]
+    int[2] addr[009AFEB0]
+    int[3] addr[009AFEB4]
+    int[4] addr[009AFEB8]
+    
+    double[0] addr[009AFE6C]
+    double[1] addr[009AFE74]
+    double[2] addr[009AFE7C]
+    double[3] addr[009AFE84]
+    double[4] addr[009AFE8C]
+    ```
+
+  * 文字列とポインタ
+
+    * ポインタに直接文字列リテラルを代入した場合の動作についてC言語は定義していない。
 
 * ダブルポインタ
 
+  * **qのような形で宣言することでダブルポインタの宣言ができる。ポインタを格納するための型を宣言するために\*をもう1つつけて宣言する。
+
+    ```c
+    /* ===========================================================
+     * 演習
+     * 変数aのアドレスを変数pに、変数pのアドレスを変数qにそれぞれ格納してください。
+     * ===========================================================*/
+    int main()
+    {
+    	int a = 100;
+    	int *p;
+    	int **q; // int* *q, int** qどれも同じ意味
+    	p = &a;
+    	q = &p;
+    
+    
+    	// 実装後、以下のコメントアウトを外して実行すること
+    	
+    	printf("a:%d\n", a);
+    	printf("&a: 0x%p\n", &a);
+    	printf("p: 0x%p\n", p);
+    	printf("*p: %d\n", *p);
+    	printf("&p: 0x%p\n", &p);
+    	printf("q: 0x%p\n", q);
+    	printf("*q: 0x%p\n", *q);
+    	printf("**q: %d\n", **q);
+    
+    	return 0;
+    }
+    ```
+
+    * *ダブルポインタのｑにおいて\*qはpのアドレスを表す*
+    * 配列同士の入れ替え（絵をかかないと厳しい）
+
+    ```c
+    #define _CRT_SECURE_NO_WARNINGS
+    #include <stdio.h>
+    #include <stdlib.h>
+    
+    /* ===========================================================
+     * 演習
+     * 二つの文字列を入れ替えるStrSwap関数を作成してください。
+     * この関数では、文字列のポインタを入れ替えて、実際の文字列が格納されている
+     * メモリ領域は変更しないようにしてください。
+     * この演習では、StrSwap関数の引数の宣言と、テストプログラムから
+     * StrSwap関数を呼び出すか所まで実装してください。
+     * ===========================================================*/
+    void StrSwap(char **a, char **b )
+    {	
+    	printf("%p\n", *a);
+    	printf("%p\n", *b);
+    	char *temp;
+    	temp = *b;
+    	*b = *a;
+    	*a = temp;
+    }
+    
+    int main()
+    {
+    	char *str1 = "Hello";
+    	char *str2 = "Good morning";
+    
+    	printf("%p\n", str1);
+    	printf("%p\n", &str1);
+    	printf("%p\n", str2);
+    	printf("%p\n", &str1);
+    
+    	printf("str1 = %s\n", str1);
+    	printf("str2 = %s\n", str2);
+    
+    	/*** ここでStrSwap関数を呼び出して、文字列の入れ替えを行う ***/
+    	StrSwap(&str1, &str2);
+    
+    	printf("str1 = %s\n", str1);
+    	printf("str2 = %s\n", str2);
+    
+    	return 0;
+    }
+    
+    ```
+
+    実行結果
+
+    ```
+    00507B38  //str1ポインタの変数に記載されたアドレス
+    0113F854　//str1ポインタ自身のアドレス
+    00507C04　//str2ポインタの変数に記載されたアドレス
+    0113F854　//str2ポインタ自身のアドレス
+    str1 = Hello
+    str2 = Good morning
+    00507B38  //str1ポインタの変数に記載されたアドレス
+    00507C04  //str2ポインタの変数に記載されたアドレス
+    str1 = Good morning
+    str2 = Hello
+    ```
+
+    * 【ポイント】ダブルポインタの場合例えばダブルポインタがqだとすると、*qはポインタが参照する変数の**アドレス**となる。
+
+    
+
+    ![image-20220708141919927](img/image-20220708141919927.png)
+
+  * Ex9.10を復習すること
+
+    ```c
+    #define _CRT_SECURE_NO_WARNINGS
+    #include <stdio.h>
+    #include <stdlib.h>
+    
+    /* ===========================================================
+     * 演習
+     * 0～6の数字を入力すると、対応する曜日が出るプログラムを作成してください。
+     * ===========================================================*/
+    int main()
+    {
+    	int num = 0;
+    	char* weekly[7];
+    
+    	weekly[0] = "Sunday";
+    	weekly[1] = "Monday";
+    	weekly[2] = "Tuesday";
+    	weekly[3] = "Wednesday";
+    	weekly[4] = "Thursday";
+    	weekly[5] = "Fryday";
+    	weekly[6] = "Saturday";
+    
+    	while (1) {
+    		scanf("%d", &num);
+    		if (1 <= num && num <= 6) {
+    			printf("%s\n", weekly[num]);
+    		}
+    		else {
+    			printf("1~6までの整数を入力してください\n");
+    		}
+    		if (num == -1) {
+    			break;
+    		}
+    	}
+    	return 0;
+    }
+    ```
+
+    * charはあくまでも1要素であることに注意
+    * char weekly[7] とすると7文字の配列を用意することになってしまう。
+
+  * Exam2.2を復習すること
+
+    ```c
+    #define _CRT_SECURE_NO_WARNINGS
+    #include <stdio.h>
+    #include <stdlib.h>
+    
+    /* ===========================================================
+     * 演習
+     * 3次行列の足し算を行うプログラムを作成してください。
+     * ===========================================================*/
+    
+    void MatrixAddition(int *result, int *matrixA, int *matrixB)
+    {
+    	int* a;
+    	int* b;
+    	int *res;
+    
+    	//それぞれの配列のアドレスをポインタに代入
+    	a = matrixA;
+    	b = matrixB;
+    	res = result;
+    
+    	printf("a=%p\n", a);
+    	printf("b=%p\n", b);
+    	printf("res=%p\n", res);
+    
+    	for (int i = 0; i < 9; i++) {
+    
+    		//「*ポインタ」で間接参照演算子で直接配列の値を参照している
+    		*res = *a + *b;
+    		
+    		//「ポインタ++」で次の配列への移動が可能
+    		res++;
+    		a++;
+    		b++;
+    
+    	}
+    
+    }
+    
+    int main()
+    {
+    	int matrixA[3][3] = { 0 };
+    	int matrixB[3][3] = { 0 };
+    	int result[3][3] = { 0 };
+    	int i = 0;
+    	int j = 0;
+    
+    	printf("1番目の行列を入力してください\n");
+    	for (i = 0; i < 3; i++) {
+    		scanf("%d %d %d", &matrixA[i][0], &matrixA[i][1], &matrixA[i][2]);
+    	}
+    
+    	printf("2番目の行列を入力してください\n");
+    	for (i = 0; i < 3; i++) {
+    		scanf("%d %d %d", &matrixB[i][0], &matrixB[i][1], &matrixB[i][2]);
+    	}
+    
+    	printf("&matrixA=%p\n", &matrixA);
+    	printf("&matrixB=%p\n", &matrixB);
+    	printf("&result=%p\n", &result);
+    
+    	MatrixAddition(&result, &matrixA, &matrixB);
+    
+    	printf("答え\n");
+    	for (i = 0; i < 3; i++) {
+    		printf("[ ");
+    		for (j = 0; j < 3; j++) {
+    			printf("%4d", result[i][j]);
+    		}
+    		printf(" ]\n");
+    	}
+    
+    	return 0;
+    }
+    ```
+
+    * 講師からの模範解答
+
+      ```c
+      #define _CRT_SECURE_NO_WARNINGS
+      #include <stdio.h>
+      #include <stdlib.h>
+      
+      /* ===========================================================
+       * 演習
+       * 3次行列の足し算を行うプログラムを作成してください。
+       * ===========================================================*/
+      
+      void MatrixAddition(int (*result)[3], int (*A)[3], int (*B)[3])
+      {
+      	for (int i = 0; i < 3; i++) {
+      		for (int j = 0; j < 3; j++) {
+      			(*result)[j] = (*A)[j] + (*B)[j];
+      		}
+      		result++;
+      		A++;
+      		B++;
+      	}
+      }
+      
+      int main()
+      {
+      	int matrixA[3][3] = { 0 };
+      	int matrixB[3][3] = { 0 };
+      	int result[3][3] = { 0 };
+      	int i = 0;
+      	int j = 0;
+      
+      	printf("1番目の行列を入力してください\n");
+      	for (i = 0; i < 3; i++) {
+      		scanf("%d %d %d", &matrixA[i][0], &matrixA[i][1], &matrixA[i][2]);
+      	}
+      
+      	printf("2番目の行列を入力してください\n");
+      	for (i = 0; i < 3; i++) {
+      		scanf("%d %d %d", &matrixB[i][0], &matrixB[i][1], &matrixB[i][2]);
+      	}
+      
+      	MatrixAddition(result, matrixA, matrixB); // MatrixAddition(&result[0], &matrixA[0], &matrixB[0]); と同じ
+      
+      	printf("答え\n");
+      	for (i = 0; i < 3; i++) {
+      		printf("[ ");
+      		for (j = 0; j < 3; j++) {
+      			printf("%4d", result[i][j]);
+      		}
+      		printf(" ]\n");
+      	}
+      
+      	return 0;
+      }
+      ```
+
+      
+
+  * 補足　変数のアドレス難しいので復習
+
+  * 以下のp1~p3はすべて同じ値（アドレス）となるが、意味が異なる（変数の型が異なっている）
+
+    ``` c
+    int table[9][9] = { 0 };
+    int *p1 = &table[0][0];
+    int (*p2)[9] = &table[ 0 ] //tableと書いた場合はこれと同じ
+    int (*p3)[9][9] = &table;
+    ```
+
+    * p1はint型のポインタという意味
+
+      * p1++でint1つ分のアドレスが加算される
+
+    * p2はint型の9個の配列ポインタという意味
+
+      * p2++で、int型の9個の配列分のアドレスが加算される
+
+    * p3はint型の9個の配列の9個の配列ポインタという意味
+
+      * p3++で、int型の9個の配列の9個の配列分(int型が81個分)のアドレスが加算される
+
+    * （）の使い方についての解説
+
+      ![image-20220708230514263](img/image-20220708230514263.png)
+
+    * 配列のポインタとポインタの配列
+
+      ![image-20220708230637676](img/image-20220708230637676.png)
+
+## 補足：変数/関数のアドレス
+
+```c
+#include <stdio.h>
+int sub1(int hiki_a, int hiki_b);
+int sub2(int hiki_a, int hiki_b);
+
+int main() {
+	int local_a = 0x11223344;
+	int local_b = 456;
+	int ret;
+
+	printf("ここはmain\n");
+	printf("ret    のアドレス:%p\n", &ret);
+	printf("local_bのアドレス:%p\n", &local_b);
+	printf("local_aのアドレス:%p\n", &local_a);
+
+	printf("main関数のアドレス：%p\n", main);
+	printf("sub1関数のアドレス：%p\n", sub1);
+	printf("sub2関数のアドレス：%p\n", sub2);
+
+	ret = sub1(local_a, local_b);
+	sub2(ret, local_a);
+}
+
+
+int sub1(int hiki_a, int hiki_b) {
+	int local_a = hiki_a + hiki_b;
+	int local_b = hiki_a - hiki_b;
+
+	printf("ここはsub1\n");
+	printf("local_bのアドレス:%p\n", &local_b);
+	printf("local_aのアドレス:%p\n", &local_a);
+	printf("hiki_a のアドレス:%p\n", &hiki_a);
+	printf("hiki_b のアドレス:%p\n", &hiki_b);
+
+//	printf("sukima1 の値:%x\n", *(int*)0x19FF0c);
+//	printf("sukima2 の値:%x\n", *(int*)0x19FF10);
+
+	sub2(local_a, local_b);
+	return local_a;
+}
+
+int sub2(int hiki_a, int hiki_b) {
+	int local_a = hiki_a + hiki_b;
+	int local_b = hiki_a - hiki_b;
+
+	printf("ここはsub2\n");
+	printf("local_bのアドレス:%p\n", &local_b);
+	printf("local_aのアドレス:%p\n", &local_a);
+	printf("hiki_a のアドレス:%p\n", &hiki_a);
+	printf("hiki_b のアドレス:%p\n", &hiki_b);
+
+//	printf("sukima1 の値:%x\n", *(int*)0x19FEF4);
+//	printf("sukima2 の値:%x\n", *(int*)0x19FEF8);
+//	printf("sukima1 の値:%x\n", *(int*)0x19FF0c);
+//	printf("sukima2 の値:%x\n", *(int*)0x19FF10);
+
+	return local_a;
+}
+
+
+```
+
+![image-20220709091131653](img/image-20220709091131653.png)
+
+![image-20220709091406221](img/image-20220709091406221.png)
+
+* それぞれの関数で、引数とローカル変数はすべてint型→4バイト
+
+* sub2→sub1→mainの順に高次のアドレスになっている
+
+* アドレスを指定した値の表示方法
+
+  ```c
+  //int*でポインタを宣言し、アドレス代入したのち*間接参照演算子で値を参照という流れ
+  *(int*)0x19FF0c
+  ```
+
+* 変数だけでなくプログラムも必ずメモリ上に格納される
+
+
+
 ## 10.変数のスコープ
+
+* スコープ：変数の有効範囲
+* ローカル変数
+  * 関数の中で宣言した変数
+  * 当該関数の中からしかアクセスできない
+
+* グローバル変数
+
+  * プログラムのどの関数からでもアクセスできる変数
+
+  * どの関数にも含まれない位置に書かれた変数はグローバル変数となる
+
+  * 自動的に0で初期化される
+
+  * スコープがプログラム全域に及び、メモリ領域を確保し続けるため乱用しない方がよい
+
+    ```c
+    int global = 12;
+    void func(void){
+    int local = 1;
+    global++;
+    printf("%d¥n", global);
+    }
+    int main(){
+    int local = 3;
+    global = 3;
+    func();
+    return 0;
+    }
+    ```
+
+### 変数の記憶クラス指定子
+
+* auto指定子
+  * 記憶クラスの指定を省略するとauto変数になる
+  * 宣言されたブロックから処理が抜けると、自動的に消される変数
+* static指定子
+  * ブロックから処理が抜けても値を保持し続ける変数
+  * グローバル変数の場合はほかのソースファイルからアクセスできない
+
+![image-20220709100047106](img/image-20220709100047106.png)
+
+* extern指定子：別のファイルで宣言されていることを示す
+
+* register指定子
+
+  * 高速にアクセスできるようにコンパイラに要求を出す
+
+  * 必ずコンパイラが従う保証はない
+
+  * 一般にはレジスタに変数の値が格納される
+
+    
+
+* const修飾子
+
+* volatile修飾子
+
+* 変数クラスのまとめ
+
+* Ex10.1について復習すること。配列のアドレスの考え方が理解できていないと思う。
 
 ## 11.動的なメモリ割り当て
 
