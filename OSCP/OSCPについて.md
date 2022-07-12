@@ -31,6 +31,11 @@ https://www.offensive-security.com/pwk-oscp/
 https://qiita.com/elliot_tk/items/a41654ad30619e4d37f3  
 https://white-lily.hateblo.jp/entry/oscp-review
 
+[マルウェア解析ブログ](https://bankingmalware.hatenablog.com/entry/2020/09/27/154602)
+→cheesheetや参考にしたサイトなどわかりやすく書かれている
+
+[Hacktheboxのwirteup(w/o metasploit)](https://rana-khalil.gitbook.io/hack-the-box-oscp-preparation/linux-boxes/lame-writeup-w-o-metasploit)
+
 ## その他tips
 
 * webで問題閲覧できるのでgoogle翻訳使える。
