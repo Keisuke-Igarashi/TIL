@@ -296,14 +296,18 @@ netstat：TCPの通信状態を調査するコマンド
 
   | No.  | 入力 | 出力                                                         |
   | ---- | ---- | ------------------------------------------------------------ |
-  |      | なし | プロセスIDの出力<br />プロセスに紐づくローカルアドレス、<br />リモートアドレスの出力<br />TCPの状態の出力 |
+  |      | なし | 以下項目を出力する<br />　プロトコル(TCP/UDP<br />　ローカルアドレス<br />　外部アドレス<br />　通信の状態<br />　プロセスID<br />　TCPの状態の出力 |
 
 * ライブラリ調査
 
   https://codezine.jp/article/detail/101
 
   * iphlpapi.dll
-    * GetExtendedTcpTable
-    * 
+    * GetTcpTable
+    * [in_addr構造体](http://chokuto.ifdef.jp/advanced/struct/in_addr.html)
+    * [MIB_TCPTABLE構造](https://docs.microsoft.com/en-us/windows/win32/api/tcpmib/ns-tcpmib-mib_tcptable)
+    * [MIB_TCPROW_LH](https://docs.microsoft.com/en-us/windows/win32/api/tcpmib/ns-tcpmib-mib_tcprow_lh)
+    * [INET_NTOP](https://linuxjm.osdn.jp/html/LDP_man-pages/man3/inet_ntop.3.html)
+      バイナリ形式のアドレスをテキスト形式に変換する
 
 * 実装検討
