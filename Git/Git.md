@@ -150,6 +150,8 @@ gitk
 rebase：ブランチの親を変える。ローカルブランチの開始地点を変更する。
 
 
+
+
 # トラブルシュート
 
 ## git pull / git push できなくなったとき
@@ -174,3 +176,6 @@ git logでこんな感じになればpushできる。
 83e756c (HEAD -> main) modified git.md
 cf06eff (origin/main, origin/HEAD) modifeid 基礎.md
 ```
+
+
+
