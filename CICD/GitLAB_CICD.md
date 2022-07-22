@@ -320,4 +320,4 @@ $ poetry run python src/sample.py
   * Linux、macOS、Windowsに対応
 * Jenkins
   * フリーかつオープンソースの自動化サーバーソフトウェア
-  * 
+
