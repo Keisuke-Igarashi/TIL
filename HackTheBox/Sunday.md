@@ -426,7 +426,6 @@ john sammy-hash.txt --show
 [John the Ripper password cracker](https://www.openwall.com/john/)
 
 ```
- sammy-hash.txt ist=/usr/share/wordlists/rockyou.txt 
 Using default input encoding: UTF-8        
 Loaded 1 password hash (sha256crypt, crypt(3) $5$ [SHA256 128/128 AVX 4x])                         
 Cost 1 (iteration count) is 5000 for all loaded hashes
