@@ -5,5 +5,6 @@
 
 
 
-
+* ログ出力
+  * [【C言語】ログはファイルに出力したい](https://qiita.com/owaridesuyo0212/items/0758269947d34ab71904)
 
