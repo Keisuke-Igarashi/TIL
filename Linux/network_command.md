@@ -23,7 +23,7 @@ TCP/IPの通信状態・ポート番号を確認する
 　　
 　　
 　　
-  
+
 **※グローバルIPはネットで検索できる**
 
 # Setting Hosts Network
