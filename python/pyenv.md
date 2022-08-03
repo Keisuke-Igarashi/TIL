@@ -19,7 +19,7 @@
 
 
 * gitからチェックアウトする(home/.pyenvがおすすめ)
-    
+  
     ```bash
     git clone https://github.com/pyenv/pyenv.git ~/.pyenv
     ```
@@ -75,13 +75,13 @@
         ```
 
     * グローバル環境のpythonのバージョンを切り替える
-        
+    
         ```bash
         pyenv global 3.8.5
         ```
 
     * 現在のシェルでPyhtonのバージョンを切り替える
-        
+    
         ```bash
         pyenv shell 3.8.5
         ```
@@ -93,5 +93,3 @@
         ```bash
         pyenv local --unset
         ```
-
-        
